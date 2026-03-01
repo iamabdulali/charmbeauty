@@ -1146,9 +1146,42 @@
       <p class="hero-sub">
         Built from what 12,000+ girls actually asked for
       </p>
-      <div class="hero-cta-wrap">
-        <a href="#sms" class="hero-cta">Join the Charm Me Bestie List</a>
+          <!-- SMS -->
+    <div class="kcard sms-card reveal d2" id="sms">
+      <!-- <div class="kcard-title" style="color:var(--hot-pink);">Get First Access</div>/ -->
+      <div class="kcard-title" style="color:var(--dark);">Drop Your Number,</div>
+      <div class="kcard-title" style="margin-bottom:10px;"><span class="purple">Be First in Line ✨</span></div>
+      <p style="text-align:center;font-weight:700;color:#777;margin-bottom:24px;font-size:0.98rem;">
+        We'll text you the moment it launches.</p>
+
+      <label class="input-label">Your phone number</label>
+      <div class="phone-row">
+        <div class="flag-box">🇺🇸 +1</div>
+        <input type="tel" class="phone-field" id="phoneInput" placeholder="(555) 000-0000" maxlength="14">
       </div>
+
+      <div class="poll-wrap">
+        <div class="poll-q">If this launches <strong>under $20</strong>, would you grab one?</div>
+        <div class="poll-options">
+          <button class="poll-btn" id="btnYes" onclick="pickIntent('yes')">YES 100%</button>
+          <button class="poll-btn" id="btnMaybe" onclick="pickIntent('maybe')">Maybe</button>
+          <button class="poll-btn" id="btnLooking" onclick="pickIntent('looking')">Just Looking</button>
+        </div>
+        <p class="poll-error" id="pollError">Pick one to continue!</p>
+      </div>
+
+      <button class="big-btn btn-pink" onclick="submitSMS()">Text Me Early Access</button>
+      <p class="legal">Standard messaging rates may apply. You can unsubscribe anytime.<br><b>Under 18? Ask a parent
+          before signing up.</b></p>
+
+      <div class="success-box" id="smsSuccess">
+        <div class="s-emoji">🎉</div>
+        <p>You're on the list!<br>We'll text you the moment it drops.</p>
+      </div>
+    </div>
+      <!-- <div class="hero-cta-wrap">
+        <a href="#sms" class="hero-cta">Join the Charm Me Bestie List</a>
+      </div> -->
       <p class="micro">Limited first drop. Early access goes to the list first.</p>
 
       <div class="reward-banner">
@@ -1195,7 +1228,7 @@
 
     <div class="spots-wrap reveal d1">
       <div class="spots-title">Giveaway Entries Claimed</div>
-      <div class="spots-count" id="spotsCount">363 <span>of 500 entered</span></div>
+      <div class="spots-count" id="spotsCount">0 <span>of 3,000 entered</span></div>
       <div class="progress-track">
         <div class="progress-fill" id="progressFill"></div>
       </div>
@@ -1234,38 +1267,7 @@
       </div>
     </div>
 
-    <!-- SMS -->
-    <div class="kcard sms-card reveal d2" id="sms">
-      <div class="kcard-title" style="color:var(--hot-pink);">Get First Access</div>
-      <div class="kcard-title" style="font-size:1.4rem;margin-bottom:16px;">by <span class="purple">Text ✨</span></div>
-      <p style="text-align:center;font-weight:700;color:#777;margin-bottom:24px;font-size:0.98rem;">Enter your phone and
-        we'll text you the moment it launches.</p>
 
-      <label class="input-label">Your phone number</label>
-      <div class="phone-row">
-        <div class="flag-box">🇺🇸 +1</div>
-        <input type="tel" class="phone-field" id="phoneInput" placeholder="(555) 000-0000" maxlength="14">
-      </div>
-
-      <div class="poll-wrap">
-        <div class="poll-q">If this launches <strong>under $20</strong>, would you grab one?</div>
-        <div class="poll-options">
-          <button class="poll-btn" id="btnYes" onclick="pickIntent('yes')">YES 100%</button>
-          <button class="poll-btn" id="btnMaybe" onclick="pickIntent('maybe')">Maybe</button>
-          <button class="poll-btn" id="btnLooking" onclick="pickIntent('looking')">Just Looking</button>
-        </div>
-        <p class="poll-error" id="pollError">Pick one to continue!</p>
-      </div>
-
-      <button class="big-btn btn-pink" onclick="submitSMS()">Text Me Early Access</button>
-      <p class="legal">Standard messaging rates may apply. You can unsubscribe anytime.<br><b>Under 18? Ask a parent
-          before signing up.</b></p>
-
-      <div class="success-box" id="smsSuccess">
-        <div class="s-emoji">🎉</div>
-        <p>You're on the list!<br>We'll text you the moment it drops.</p>
-      </div>
-    </div>
 
     <!-- EMAIL -->
     <div class="kcard email-card reveal d3">
@@ -1381,18 +1383,18 @@
     setInterval(updateCountdown, 1000);
 
     // ENTRIES — animate bar in, slowly tick up
-    let entries = 363;
+    let entries = 0;
     const spotsEl = document.getElementById('spotsCount');
     const fillEl = document.getElementById('progressFill');
     function updateSpots() {
-      const pct = (entries / 500 * 100).toFixed(1);
-      spotsEl.innerHTML = `${entries} <span>of 500 entered</span>`;
+      const pct = (entries / 3000 * 100).toFixed(1);
+      spotsEl.innerHTML = `${entries} <span>of 3,000 entered</span>`;
       fillEl.style.width = pct + '%';
     }
     setTimeout(() => updateSpots(), 600);
-    setInterval(() => {
-      if (entries < 498 && Math.random() < 0.3) { entries++; updateSpots(); }
-    }, 8000);
+    // setInterval(() => {
+    //   if (entries < 498 && Math.random() < 0.3) { entries++; updateSpots(); }
+    // }, 8000);
 
     // PHONE FORMAT
     const phoneInput = document.getElementById('phoneInput');
@@ -1450,9 +1452,12 @@
     async function bumpCount() {
       const el = document.getElementById('proofNum');
       let n = await getProfileCount();
+      entries = n
+      updateSpots()
       const target = n + Math.floor(Math.random() * 3);
       const tick = () => { n; el.textContent = n.toLocaleString(); if (n < target) requestAnimationFrame(tick); };
       requestAnimationFrame(tick);
+      
     }
 
     // LIVE NOTIFICATIONS
@@ -1663,6 +1668,8 @@
       const count = await getProfileCount();
       if (count !== null) {
         document.getElementById('proofNum').textContent = count;
+        entries = count
+        updateSpots()
       }
     });
   </script>
