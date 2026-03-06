@@ -1852,6 +1852,7 @@
     </div>
 
     <script>
+      const stepsRow = document.querySelector(".steps-row");
       // PROGRESS
       // let currentStep = 1;
       // const TOTAL = 3;
@@ -1936,7 +1937,7 @@
         if (panel) panel.classList.add("active");
         currentStep = n;
         updateProgress(n);
-        panel.scrollIntoView({ behavior: "smooth" });
+        stepsRow.scrollIntoView({ behavior: "smooth" });
       }
 
       function nextStep(from) {
@@ -1955,9 +1956,7 @@
         pa.style.transition = "opacity .4s";
         pa.style.opacity = "0";
         document.getElementById("successPanel").classList.add("on");
-        document
-          .getElementById("successPanel")
-          .scrollIntoView({ behavior: "smooth" });
+        stepsRow.scrollIntoView({ behavior: "smooth" });
       }
 
       // BESTIE
@@ -2492,7 +2491,7 @@
             .querySelectorAll(".panel")
             .forEach((p) => p.classList.remove("active"));
           document.getElementById("successPanel").style.display = "block";
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          stepsRow.scrollIntoView({ behavior: "smooth" });
         } catch (err) {
           console.error("Submit error:", err);
           alert(
