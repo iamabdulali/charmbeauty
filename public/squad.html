@@ -1,0 +1,2531 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Join the Charm Squad ✨ – Charm Me</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --pink: #ff4d9e;
+        --purple: #9b72cf;
+        --navy: #1e1240;
+        --body: #3d2070;
+        --muted: #9b82b8;
+        --border: #f0c8e0;
+        --card-bg: #fff5fb;
+        --input: #ffffff;
+        --gold: #f5c842;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Nunito", sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
+        color: var(--navy);
+        /* Exact site background: very pale lavender-pink radial mesh */
+        background:
+          radial-gradient(
+            ellipse 70% 60% at 0% 0%,
+            #ffd8ee 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 60% 50% at 100% 0%,
+            #e8daff 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 80% 70% at 50% 100%,
+            #f5daff 0%,
+            transparent 60%
+          ),
+          #f3eaf8;
+      }
+
+      /* ── TRANSLUCENT BG CIRCLES (visible in screenshot top-right) ── */
+      .orb {
+        position: fixed;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+        background: rgba(255, 255, 255, 0.45);
+        animation: orbFloat ease-in-out infinite;
+      }
+      .o1 {
+        width: 420px;
+        height: 420px;
+        top: -100px;
+        left: -120px;
+        animation-duration: 11s;
+      }
+      .o2 {
+        width: 320px;
+        height: 320px;
+        top: 15%;
+        right: -90px;
+        animation-duration: 14s;
+        animation-delay: 2s;
+        opacity: 0.5;
+      }
+      .o3 {
+        width: 240px;
+        height: 240px;
+        top: 40%;
+        right: 5%;
+        animation-duration: 10s;
+        animation-delay: 1s;
+        opacity: 0.35;
+      }
+      .o4 {
+        width: 180px;
+        height: 180px;
+        bottom: 15%;
+        left: 3%;
+        animation-duration: 12s;
+        animation-delay: 3s;
+        opacity: 0.3;
+      }
+      @keyframes orbFloat {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-22px);
+        }
+      }
+
+      /* ── DECO ICONS ── */
+      .deco {
+        position: fixed;
+        pointer-events: none;
+        z-index: 1;
+        animation: decoFloat ease-in-out infinite;
+      }
+      .d1 {
+        top: 10%;
+        left: 2%;
+        font-size: 2rem;
+        animation-duration: 5s;
+      }
+      .d2 {
+        top: 55%;
+        left: 1.5%;
+        font-size: 1.3rem;
+        animation-duration: 7s;
+        animation-delay: 1.5s;
+      }
+      .d3 {
+        bottom: 20%;
+        left: 3.5%;
+        font-size: 0.9rem;
+        animation-duration: 6s;
+        animation-delay: 3s;
+      }
+      .d4 {
+        top: 16%;
+        right: 2%;
+        font-size: 1.4rem;
+        animation-duration: 8s;
+        animation-delay: 0.8s;
+      }
+      .d5 {
+        top: 44%;
+        right: 2.5%;
+        font-size: 1.9rem;
+        animation-duration: 6.5s;
+        animation-delay: 2s;
+      }
+      .d6 {
+        bottom: 22%;
+        right: 3.5%;
+        font-size: 1.1rem;
+        animation-duration: 9s;
+        animation-delay: 1s;
+      }
+      .d7 {
+        top: 70%;
+        left: 4%;
+        font-size: 1.6rem;
+        animation-duration: 7s;
+        animation-delay: 2.5s;
+      }
+      @keyframes decoFloat {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-12px) rotate(5deg);
+        }
+      }
+
+      /* ── TICKER — solid hot pink ── */
+      .ticker {
+        position: relative;
+        z-index: 30;
+        background: var(--pink);
+        height: 38px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+      }
+      .ticker-track {
+        display: flex;
+        white-space: nowrap;
+        animation: tickScroll 26s linear infinite;
+      }
+      .ticker-track span {
+        color: #fff;
+        font-weight: 800;
+        font-size: 0.78rem;
+        padding: 0 30px;
+        letter-spacing: 0.2px;
+      }
+      .ticker-track span::before {
+        content: "✨  ";
+      }
+      @keyframes tickScroll {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+
+      /* ── LOGO — matches site exactly ── */
+      .logo {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        padding: 22px 20px 4px;
+        font-weight: 900;
+        font-size: 1.4rem;
+        color: var(--pink);
+        letter-spacing: 0.3px;
+      }
+
+      /* ── HERO ── */
+      .hero {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        padding: 10px 28px 20px;
+      }
+
+      /* Eyebrow: matches site pill — pink bg, white text, yellow sparkle dot */
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--pink);
+        color: #fff;
+        font-weight: 800;
+        font-size: 0.82rem;
+        padding: 8px 22px;
+        border-radius: 100px;
+        margin-bottom: 18px;
+        letter-spacing: 0.3px;
+        animation: fadeDown 0.6s ease both;
+      }
+      .eyebrow-spark {
+        color: var(--gold);
+        font-style: normal;
+      }
+
+      /* H1 — Nunito 900, site uses this exact weight for "Something Super Cute Is Dropping Soon" */
+      .hero h1 {
+        font-weight: 900;
+        font-size: clamp(2.5rem, 7.5vw, 4.2rem);
+        line-height: 1.05;
+        margin-bottom: 12px;
+        animation: fadeDown 0.5s 0.1s ease both;
+        opacity: 0;
+      }
+      .line-dark {
+        color: var(--navy);
+        display: block;
+      }
+      .line-pink {
+        color: var(--pink);
+        display: block;
+        font-style: italic;
+      }
+      .line-purple {
+        color: var(--purple);
+        display: block;
+      }
+
+      .hero-sub {
+        color: var(--body);
+        font-size: 0.9rem;
+        font-weight: 700;
+        animation: fadeDown 0.5s 0.2s ease both;
+        opacity: 0;
+      }
+
+      @keyframes fadeDown {
+        from {
+          opacity: 0;
+          transform: translateY(-12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ── PERKS CARD ── */
+      .perks-card {
+        position: relative;
+        z-index: 10;
+        max-width: 580px;
+        width: calc(100% - 40px);
+        margin: 16px auto 0;
+        background: var(--card-bg);
+        border: 1.5px solid var(--border);
+        border-radius: 20px;
+        padding: 20px 20px 16px;
+        box-shadow: 0 4px 20px rgba(255, 77, 158, 0.09);
+        animation: fadeUp 0.5s 0.2s ease both;
+        opacity: 0;
+      }
+      .perks-title {
+        font-weight: 900;
+        font-size: 1rem;
+        color: var(--navy);
+        text-align: center;
+        margin-bottom: 12px;
+      }
+      .perks-title .pk {
+        color: var(--pink);
+      }
+      .perks-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+        gap: 8px;
+      }
+      .perk {
+        background: #fff;
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        padding: 11px 8px;
+        text-align: center;
+      }
+      .perk-i {
+        font-size: 1.4rem;
+        display: block;
+        margin-bottom: 4px;
+      }
+      .perk-t {
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: var(--body);
+        line-height: 1.35;
+        display: block;
+      }
+
+      /* ── HASHTAG STRIP ── */
+      .hash-strip {
+        position: relative;
+        z-index: 10;
+        max-width: 580px;
+        width: calc(100% - 40px);
+        margin: 10px auto 0;
+        background: var(--pink);
+        border-radius: 14px;
+        padding: 12px 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 4px 18px rgba(255, 77, 158, 0.28);
+        animation: fadeUp 0.5s 0.3s ease both;
+        opacity: 0;
+      }
+      .hi {
+        font-size: 1.6rem;
+        flex-shrink: 0;
+      }
+      .ht strong {
+        color: #fff;
+        font-weight: 900;
+        font-size: 0.92rem;
+        display: block;
+      }
+      .ht span {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.73rem;
+        font-weight: 700;
+      }
+
+      /* ── PROGRESS ── */
+      .progress-bar {
+        position: relative;
+        z-index: 10;
+        max-width: 540px;
+        margin: 20px auto 0;
+        padding: 0 24px;
+        animation: fadeUp 0.5s 0.28s ease both;
+        opacity: 0;
+      }
+      .steps-row {
+        display: flex;
+        align-items: center;
+        position: relative;
+      }
+      .s-track {
+        position: absolute;
+        left: 18px;
+        right: 18px;
+        top: 18px;
+        height: 3px;
+        background: rgba(255, 77, 158, 0.15);
+        border-radius: 3px;
+        z-index: 0;
+      }
+      .s-fill {
+        height: 100%;
+        background: var(--pink);
+        border-radius: 3px;
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 0%;
+      }
+      .s-dot {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 0.8rem;
+        position: relative;
+        z-index: 1;
+        flex-shrink: 0;
+        background: #fff;
+        border: 2.5px solid rgba(255, 77, 158, 0.22);
+        color: var(--muted);
+        transition: all 0.3s;
+      }
+      .s-dot.active {
+        background: var(--pink);
+        border-color: transparent;
+        color: #fff;
+        box-shadow: 0 4px 14px rgba(255, 77, 158, 0.38);
+        transform: scale(1.12);
+      }
+      .s-dot.done {
+        background: var(--navy);
+        border-color: transparent;
+        color: #fff;
+      }
+      .s-gap {
+        flex: 1;
+      }
+      .s-labels {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 7px;
+      }
+      .s-lbl {
+        font-size: 0.6rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: rgba(155, 130, 184, 0.45);
+        width: 36px;
+        text-align: center;
+      }
+      .s-lbl.active {
+        color: var(--pink);
+      }
+      .s-lbl.done {
+        color: var(--navy);
+      }
+
+      /* ── FORM CARD — matches site card: light pink bg, pink border ── */
+      .form-card {
+        position: relative;
+        z-index: 10;
+        background: var(--card-bg);
+        border: 1.5px solid var(--border);
+        border-radius: 20px;
+        padding: 28px 26px 24px;
+        max-width: 540px;
+        width: calc(100% - 40px);
+        margin: 16px auto 0;
+        box-shadow: 0 4px 24px rgba(255, 77, 158, 0.1);
+        animation: fadeUp 0.5s 0.35s ease both;
+        opacity: 0;
+      }
+
+      .panel {
+        display: none;
+      }
+      .panel.active {
+        display: block;
+        animation: slideIn 0.38s ease both;
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .panel-title {
+        font-weight: 900;
+        font-size: 1.55rem;
+        color: var(--navy);
+        margin-bottom: 2px;
+        line-height: 1.1;
+      }
+      .panel-title .pk {
+        color: var(--pink);
+      }
+      .panel-sub {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--muted);
+        margin-bottom: 18px;
+      }
+
+      /* ── INPUTS — white bg, matches site ── */
+      .field {
+        margin-bottom: 13px;
+      }
+      .lbl {
+        display: block;
+        font-size: 0.7rem;
+        font-weight: 900;
+        color: var(--navy);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 5px;
+      }
+      .lbl .req {
+        color: var(--pink);
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"],
+      input[type="url"],
+      input[type="number"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        font-family: "Nunito", sans-serif;
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: var(--navy);
+        background: var(--input);
+        outline: none;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s,
+          background 0.2s;
+        -webkit-appearance: none;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--pink);
+        box-shadow: 0 0 0 3px rgba(255, 77, 158, 0.1);
+      }
+      input::placeholder,
+      textarea::placeholder {
+        color: #c8a8d8;
+        font-weight: 600;
+      }
+      textarea {
+        resize: vertical;
+        min-height: 84px;
+        line-height: 1.55;
+      }
+      select {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23FF4D9E' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 13px center;
+        padding-right: 34px;
+      }
+      .field-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      @media (max-width: 440px) {
+        .field-row {
+          grid-template-columns: 1fr;
+        }
+      }
+      .hint {
+        font-size: 0.68rem;
+        color: var(--muted);
+        font-weight: 700;
+        margin-top: 4px;
+      }
+
+      /* @ handle prefix */
+      .hw {
+        position: relative;
+      }
+      .hat {
+        position: absolute;
+        left: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--pink);
+        font-weight: 900;
+        font-size: 0.92rem;
+        pointer-events: none;
+      }
+      .hinp {
+        padding-left: 24px !important;
+      }
+
+      /* ── PILL OPTIONS — matches site's YES 100% / Maybe / Just Looking ── */
+      .pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .pill input {
+        display: none;
+      }
+      .pill label {
+        display: inline-block;
+        padding: 8px 18px;
+        border: 2px solid #ddd0e8;
+        border-radius: 100px;
+        font-weight: 800;
+        font-size: 0.82rem;
+        color: var(--navy);
+        background: #fff;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .pill label:hover {
+        border-color: var(--pink);
+        color: var(--pink);
+      }
+      .pill input:checked + label {
+        background: var(--navy);
+        border-color: var(--navy);
+        color: #fff;
+      }
+
+      .divider {
+        border: none;
+        border-top: 1.5px dashed rgba(255, 77, 158, 0.16);
+        margin: 14px 0;
+      }
+
+      /* ── NAV BUTTONS ── */
+      .nav {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        align-items: center;
+      }
+
+      .btn-back {
+        padding: 12px 20px;
+        border-radius: 100px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 900;
+        font-size: 0.88rem;
+        border: 2px solid #e5d0f0;
+        color: var(--muted);
+        background: #fff;
+        cursor: pointer;
+        transition: all 0.18s;
+        white-space: nowrap;
+      }
+      .btn-back:hover {
+        border-color: var(--pink);
+        color: var(--pink);
+      }
+
+      /* CTA — solid pink, no gradient — exact match to "Text Me Early Access" ── */
+      .btn-cta {
+        flex: 1;
+        padding: 14px 20px;
+        border-radius: 100px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 900;
+        font-size: 0.98rem;
+        background: var(--pink);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 18px rgba(255, 77, 158, 0.32);
+        transition: all 0.18s;
+        letter-spacing: 0.1px;
+      }
+      .btn-cta:hover {
+        background: #f03d8e;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 22px rgba(255, 77, 158, 0.42);
+      }
+      .btn-cta:active {
+        transform: translateY(0);
+      }
+
+      /* ── SUCCESS ── */
+      .success {
+        display: none;
+        text-align: center;
+        padding: 6px 0;
+      }
+      .success.on {
+        display: block;
+        animation: slideIn 0.5s ease both;
+      }
+      .s-emoji {
+        font-size: 3.6rem;
+        display: block;
+        margin-bottom: 10px;
+        animation: pop 0.5s 0.1s ease both;
+        opacity: 0;
+      }
+      @keyframes pop {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        70% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .success h2 {
+        font-weight: 900;
+        font-size: 1.8rem;
+        color: var(--navy);
+        margin-bottom: 8px;
+      }
+      .success h2 .pk {
+        color: var(--pink);
+      }
+      .success p {
+        font-size: 0.86rem;
+        font-weight: 700;
+        color: var(--muted);
+        line-height: 1.6;
+        max-width: 340px;
+        margin: 0 auto 14px;
+      }
+      .s-tag {
+        display: inline-block;
+        background: var(--pink);
+        color: #fff;
+        padding: 8px 20px;
+        border-radius: 100px;
+        font-weight: 900;
+        font-size: 0.86rem;
+        margin-bottom: 8px;
+      }
+      .s-cta {
+        display: inline-block;
+        background: var(--navy);
+        color: #fff;
+        padding: 12px 28px;
+        border-radius: 100px;
+        font-weight: 900;
+        font-size: 0.9rem;
+        text-decoration: none;
+        box-shadow: 0 4px 16px rgba(30, 18, 64, 0.18);
+        margin-top: 4px;
+      }
+
+      /* ── BESTIE SECTION ── */
+      .bestie-section {
+        margin-top: 18px;
+        padding-top: 16px;
+        border-top: 1.5px dashed rgba(255, 77, 158, 0.18);
+      }
+      .bestie-label {
+        font-size: 0.7rem;
+        font-weight: 900;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        display: block;
+        text-align: center;
+        margin-bottom: 5px;
+      }
+      .bestie-hint {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--muted);
+        text-align: center;
+        margin-bottom: 11px;
+        line-height: 1.5;
+      }
+      .b-row {
+        margin-bottom: 8px;
+        animation: slideIn 0.3s ease both;
+      }
+      .b-wrap {
+        position: relative;
+      }
+      .b-num {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-weight: 900;
+        font-size: 0.84rem;
+        color: var(--pink);
+        pointer-events: none;
+      }
+      .b-wrap input {
+        padding-left: 30px !important;
+      }
+
+      .btn-add {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        width: 100%;
+        padding: 9px;
+        margin-bottom: 11px;
+        background: transparent;
+        border: 2px dashed var(--border);
+        border-radius: 11px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 900;
+        font-size: 0.8rem;
+        color: var(--pink);
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn-add:hover {
+        border-color: var(--pink);
+        background: #fff5fb;
+      }
+      .btn-add:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      .btn-bestie {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 13px 20px;
+        background: var(--pink);
+        color: #fff;
+        border: none;
+        border-radius: 100px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 900;
+        font-size: 0.92rem;
+        cursor: pointer;
+        box-shadow: 0 4px 18px rgba(255, 77, 158, 0.3);
+        transition: all 0.18s;
+        text-decoration: none;
+      }
+      .btn-bestie:hover {
+        background: #f03d8e;
+        transform: translateY(-1px);
+      }
+
+      .btn-copy {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        padding: 10px 20px;
+        margin-top: 8px;
+        background: #fff;
+        color: var(--pink);
+        border: 2px solid var(--border);
+        border-radius: 100px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 900;
+        font-size: 0.82rem;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn-copy:hover {
+        border-color: var(--pink);
+        background: #fff5fb;
+      }
+
+      .copied-msg {
+        display: none;
+        font-size: 0.73rem;
+        font-weight: 800;
+        color: #22c97a;
+        text-align: center;
+        margin-top: 6px;
+      }
+      .copied-msg.on {
+        display: block;
+        animation: fadeDown 0.3s ease both;
+      }
+
+      /* ── SOCIAL PROOF BUBBLE ── */
+      .proof {
+        position: fixed;
+        bottom: 20px;
+        left: 16px;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #fff;
+        border: 1.5px solid var(--border);
+        border-radius: 100px;
+        padding: 6px 15px;
+        box-shadow: 0 4px 16px rgba(255, 77, 158, 0.12);
+        animation: proofIn 0.5s 2s ease both;
+        opacity: 0;
+        transition:
+          opacity 0.4s,
+          transform 0.4s;
+      }
+      @keyframes proofIn {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .proof-av {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: var(--pink);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 0.58rem;
+        font-weight: 900;
+        flex-shrink: 0;
+      }
+      .proof-txt {
+        font-size: 0.68rem;
+        font-weight: 800;
+        color: var(--navy);
+        line-height: 1.3;
+      }
+      .proof-txt .pk {
+        color: var(--pink);
+      }
+
+      /* ── STORY TEMPLATE ── */
+      .story-section {
+        margin-top: 22px;
+        padding-top: 20px;
+        border-top: 1.5px dashed rgba(255, 77, 158, 0.18);
+      }
+      .story-section-label {
+        font-size: 0.7rem;
+        font-weight: 900;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        display: block;
+        text-align: center;
+        margin-bottom: 5px;
+      }
+      .story-section-hint {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--muted);
+        text-align: center;
+        margin-bottom: 14px;
+        line-height: 1.5;
+      }
+
+      /* The actual story card — 9:16 ratio, Instagram story size */
+      .story-canvas {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 9/16;
+        max-width: 280px;
+        margin: 0 auto 14px;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(255, 77, 158, 0.22);
+        background: linear-gradient(
+          160deg,
+          #ffb8d9 0%,
+          #f5a0ff 40%,
+          #b8a0ff 80%,
+          #9b72cf 100%
+        );
+        cursor: pointer;
+      }
+
+      /* Decorative blobs inside story */
+      .story-blob {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+        opacity: 0.35;
+      }
+      .sb1 {
+        width: 180px;
+        height: 180px;
+        background: #ff4d9e;
+        top: -40px;
+        right: -40px;
+      }
+      .sb2 {
+        width: 140px;
+        height: 140px;
+        background: #fff;
+        bottom: -30px;
+        left: -30px;
+      }
+      .sb3 {
+        width: 100px;
+        height: 100px;
+        background: #c84bde;
+        top: 38%;
+        left: -20px;
+      }
+
+      /* Floating deco inside story */
+      .story-deco {
+        position: absolute;
+        pointer-events: none;
+        font-size: 1.2rem;
+        opacity: 0.9;
+      }
+      .sd1 {
+        top: 6%;
+        left: 8%;
+      }
+      .sd2 {
+        top: 6%;
+        right: 8%;
+      }
+      .sd3 {
+        top: 22%;
+        right: 4%;
+      }
+      .sd4 {
+        bottom: 22%;
+        left: 5%;
+      }
+      .sd5 {
+        bottom: 8%;
+        right: 10%;
+      }
+
+      /* Photo upload zone */
+      .photo-zone {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 62%;
+        aspect-ratio: 1/1;
+        border-radius: 50%;
+        border: 3px dashed rgba(255, 255, 255, 0.7);
+        background: rgba(255, 255, 255, 0.18);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+        z-index: 5;
+        overflow: hidden;
+      }
+      .photo-zone:hover {
+        background: rgba(255, 255, 255, 0.28);
+        border-color: #fff;
+      }
+      .photo-zone .pz-icon {
+        font-size: 1.8rem;
+      }
+      .photo-zone .pz-text {
+        font-size: 0.6rem;
+        font-weight: 800;
+        color: rgba(255, 255, 255, 0.9);
+        text-align: center;
+        line-height: 1.3;
+      }
+      .photo-zone img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      #photoInput {
+        display: none;
+      }
+
+      /* Top text */
+      .story-top {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 16px 14px 12px;
+        text-align: center;
+        z-index: 6;
+      }
+      .story-logo {
+        font-weight: 900;
+        font-size: 0.9rem;
+        color: #fff;
+        letter-spacing: 0.3px;
+        margin-bottom: 6px;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.15);
+      }
+      .story-headline {
+        font-weight: 900;
+        font-size: 1.1rem;
+        color: #fff;
+        line-height: 1.2;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+      .story-headline .sh-pink {
+        color: #ffd6ee;
+      }
+      .story-headline .sh-yellow {
+        color: #ffe566;
+      }
+
+      /* Bottom tag */
+      .story-bottom {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 14px 14px 18px;
+        text-align: center;
+        z-index: 6;
+        background: linear-gradient(
+          to top,
+          rgba(30, 18, 64, 0.55) 0%,
+          transparent 100%
+        );
+      }
+      .story-tag-line {
+        font-size: 0.62rem;
+        font-weight: 900;
+        color: rgba(255, 255, 255, 0.8);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: 3px;
+      }
+      .story-handles {
+        font-weight: 900;
+        font-size: 0.78rem;
+        color: #fff;
+        line-height: 1.5;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      }
+      .story-hashtag {
+        font-size: 0.65rem;
+        font-weight: 800;
+        color: rgba(255, 220, 240, 0.9);
+        margin-top: 2px;
+      }
+
+      /* Save button */
+      .btn-save-story {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 13px 20px;
+        background: var(--navy);
+        color: #fff;
+        border: none;
+        border-radius: 100px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 900;
+        font-size: 0.92rem;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(30, 18, 64, 0.22);
+        transition: all 0.18s;
+        margin-bottom: 8px;
+      }
+      .btn-save-story:hover {
+        background: #2d1a5e;
+        transform: translateY(-1px);
+      }
+      .story-save-hint {
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--muted);
+        text-align: center;
+        line-height: 1.4;
+      }
+
+      /* ── FOOTER ── */
+      .footer {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        padding: 16px 20px 30px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--muted);
+        margin-top: 12px;
+      }
+      .footer a {
+        color: var(--pink);
+        text-decoration: none;
+      }
+
+      /* Error message text under a field */
+      .field-error {
+        display: none; /* hidden until JS sets it to block */
+        margin-top: 4px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #e0457b; /* match your pink — swap var(--pink) if you prefer */
+        letter-spacing: 0.01em;
+      }
+
+      /* Red border on the offending input / select / textarea */
+      .field-invalid {
+        border-color: #e0457b !important;
+        background-color: #fff5f8 !important;
+        outline: none;
+      }
+
+      /* Keep focus ring on-brand even when invalid */
+      .field-invalid:focus {
+        border-color: #e0457b !important;
+        box-shadow: 0 0 0 3px rgba(224, 69, 123, 0.15) !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="orb o1"></div>
+    <div class="orb o2"></div>
+    <div class="orb o3"></div>
+    <div class="orb o4"></div>
+    <div class="deco d1">🌸</div>
+    <div class="deco d2">🍓</div>
+    <div class="deco d3">✨</div>
+    <div class="deco d4">⭐</div>
+    <div class="deco d5">🦋</div>
+    <div class="deco d6">💜</div>
+    <div class="deco d7">🌸</div>
+
+    <!-- TICKER -->
+    <div class="ticker">
+      <div class="ticker-track">
+        <span>Join the Charm Squad</span><span>Charm On 💜</span
+        ><span>Use #charmmebeauty</span><span>Get Reposted</span
+        ><span>Limited Spots</span><span>Apply Now</span
+        ><span>Dropping Soon</span><span>Be First in Line</span>
+        <span>Join the Charm Squad</span><span>Charm On 💜</span
+        ><span>Use #charmmebeauty</span><span>Get Reposted</span
+        ><span>Limited Spots</span><span>Apply Now</span
+        ><span>Dropping Soon</span><span>Be First in Line</span>
+      </div>
+    </div>
+
+    <!-- LOGO -->
+    <div class="logo">
+      <a href="index.html" style="text-decoration: none; color: inherit"
+        >✨ Charm Me ✨
+      </a>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="eyebrow">
+        <span class="eyebrow-spark">✦</span> Applications Now Open
+      </div>
+      <h1>
+        <span class="line-dark">Apply to Join</span>
+        <span class="line-pink">The Charm Squad</span>
+      </h1>
+      <p class="hero-sub">
+        Built from what 12,000+ girls actually asked for — now we're building it
+        <em>with</em> you.
+      </p>
+    </div>
+
+    <!-- PERKS -->
+    <div class="perks-card">
+      <div class="perks-title">
+        What You Get as a <span class="pk">Charm Squad</span> Member 💜
+      </div>
+      <div class="perks-grid">
+        <div class="perk">
+          <span class="perk-i">👯</span
+          ><span class="perk-t">Be Part of a Community of Besties</span>
+        </div>
+        <div class="perk">
+          <span class="perk-i">🛍️</span
+          ><span class="perk-t">Exclusive Charm Me Merch</span>
+        </div>
+        <div class="perk">
+          <span class="perk-i">📲</span
+          ><span class="perk-t">Get Reposted on Our Socials</span>
+        </div>
+        <div class="perk">
+          <span class="perk-i">✉️</span
+          ><span class="perk-t">Featured on Our Website</span>
+        </div>
+        <div class="perk">
+          <span class="perk-i">📦</span
+          ><span class="perk-t">Receive PR &amp; Free Products</span>
+        </div>
+        <div class="perk">
+          <span class="perk-i">🧪</span
+          ><span class="perk-t">Help Develop Our Next Products</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HASHTAG STRIP -->
+    <div class="hash-strip">
+      <div class="hi">📸</div>
+      <div class="ht">
+        <strong>Use #charmmebeauty for a chance to be reposted!</strong>
+        <span
+          >Tag us on TikTok &amp; Instagram — we're watching and reposting our
+          faves ✨</span
+        >
+      </div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-bar" id="progressArea">
+      <div class="steps-row">
+        <div class="s-track"><div class="s-fill" id="sFill"></div></div>
+        <div class="s-dot active" id="n1">1</div>
+        <div class="s-gap"></div>
+        <div class="s-dot" id="n2">2</div>
+        <div class="s-gap"></div>
+        <div class="s-dot" id="n3">3</div>
+      </div>
+      <div class="s-labels">
+        <div class="s-lbl active" id="sl1">You</div>
+        <div class="s-lbl" id="sl2">Socials</div>
+        <div class="s-lbl" id="sl3">Vibe</div>
+      </div>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="form-card">
+      <!-- STEP 1: YOU -->
+      <div class="panel active" id="step1">
+        <div class="panel-title">Hey, <span class="pk">gorgeous!</span> 🌸</div>
+        <div class="panel-sub">
+          Let's start with the basics — tell us a little about you.
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="lbl">First Name <span class="req">*</span></label>
+            <input type="text" id="firstName" placeholder="First name" />
+          </div>
+          <div class="field">
+            <label class="lbl">Last Name <span class="req">*</span></label>
+            <input type="text" id="lastName" placeholder="Last name" />
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl">Email Address <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="your@email.com" />
+        </div>
+        <div class="field">
+          <label class="lbl">Phone Number</label>
+          <input type="tel" id="phone" placeholder="(555) 000-0000" />
+          <div class="hint">We'll text you the moment it launches 📲</div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="lbl">Age <span class="req">*</span></label>
+            <select id="age">
+              <option value="">Your age</option>
+              <option>Under 13</option>
+              <option>13</option>
+              <option>14</option>
+              <option>15</option>
+              <option>16</option>
+              <option>17</option>
+              <option>18+</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lbl">Location <span class="req">*</span></label>
+            <input type="text" id="location" placeholder="City, State" />
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl">If under 18, does a parent know?</label>
+          <div class="pills">
+            <div class="pill">
+              <input type="radio" name="parent" id="p1" value="yes" /><label
+                for="p1"
+                >YES 💜</label
+              >
+            </div>
+            <div class="pill">
+              <input type="radio" name="parent" id="p2" value="no" /><label
+                for="p2"
+                >Not yet</label
+              >
+            </div>
+            <div class="pill">
+              <input type="radio" name="parent" id="p3" value="18" /><label
+                for="p3"
+                >I'm 18+</label
+              >
+            </div>
+          </div>
+          <div class="hint">Under 18? Ask a parent before signing up.</div>
+        </div>
+        <div class="nav">
+          <button class="btn-cta" onclick="nextStep(1)">
+            Next: Your Socials →
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2: SOCIALS -->
+      <div class="panel" id="step2">
+        <div class="panel-title">Your <span class="pk">Socials</span> 📱</div>
+        <div class="panel-sub">
+          Where do you shine online? Share your handles below.
+        </div>
+        <div class="field">
+          <label class="lbl">TikTok Handle <span class="req">*</span></label>
+          <div class="hw">
+            <span class="hat">@</span
+            ><input
+              type="text"
+              class="hinp"
+              id="tiktok"
+              placeholder="yourusername"
+            />
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl">Instagram Handle</label>
+          <div class="hw">
+            <span class="hat">@</span
+            ><input
+              type="text"
+              class="hinp"
+              id="instagram"
+              placeholder="yourusername"
+            />
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl">YouTube Channel</label>
+          <div class="hw">
+            <span class="hat">@</span
+            ><input
+              type="text"
+              class="hinp"
+              id="youtube"
+              placeholder="yourchannel"
+            />
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl"
+            >Most-Used Platform <span class="req">*</span></label
+          >
+          <div class="pills">
+            <div class="pill">
+              <input
+                type="radio"
+                name="platform"
+                id="pl1"
+                value="tiktok"
+              /><label for="pl1">🎵 TikTok</label>
+            </div>
+            <div class="pill">
+              <input
+                type="radio"
+                name="platform"
+                id="pl2"
+                value="instagram"
+              /><label for="pl2">📸 Instagram</label>
+            </div>
+            <div class="pill">
+              <input
+                type="radio"
+                name="platform"
+                id="pl3"
+                value="youtube"
+              /><label for="pl3">▶️ YouTube</label>
+            </div>
+            <div class="pill">
+              <input
+                type="radio"
+                name="platform"
+                id="pl4"
+                value="other"
+              /><label for="pl4">✨ Other</label>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl">Link to Your Best Post</label>
+          <input
+            type="url"
+            id="bestPost"
+            placeholder="https://www.tiktok.com/@you/..."
+          />
+          <div class="hint">Show us the content you're most proud of ✨</div>
+        </div>
+        <div class="nav">
+          <button class="btn-back" onclick="prevStep(2)">← Back</button>
+          <button class="btn-cta" onclick="nextStep(2)">
+            Next: Your Vibe →
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3: VIBE -->
+      <div class="panel" id="step3">
+        <div class="panel-title">Your <span class="pk">Vibe</span> ✨</div>
+        <div class="panel-sub">
+          Tell us what makes you, <em>you</em> — we love real girls, not perfect
+          ones.
+        </div>
+        <div class="field">
+          <label class="lbl"
+            >Why do you want to join the Charm Squad?
+            <span class="req">*</span></label
+          >
+          <textarea
+            id="whyJoin"
+            placeholder="Tell us what this means to you — be real with us! 💜"
+          ></textarea>
+        </div>
+        <div class="field">
+          <label class="lbl"
+            >How did you hear about Charm Me? <span class="req">*</span></label
+          >
+          <div class="pills">
+            <div class="pill">
+              <input type="radio" name="heard" id="h1" value="christi" /><label
+                for="h1"
+                >🎬 Christi Rose</label
+              >
+            </div>
+            <div class="pill">
+              <input type="radio" name="heard" id="h2" value="tiktok" /><label
+                for="h2"
+                >🎵 TikTok</label
+              >
+            </div>
+            <div class="pill">
+              <input
+                type="radio"
+                name="heard"
+                id="h3"
+                value="instagram"
+              /><label for="h3">📸 Instagram</label>
+            </div>
+            <div class="pill">
+              <input type="radio" name="heard" id="h4" value="friend" /><label
+                for="h4"
+                >👯 A Friend</label
+              >
+            </div>
+            <div class="pill">
+              <input type="radio" name="heard" id="h5" value="other" /><label
+                for="h5"
+                >✨ Other</label
+              >
+            </div>
+          </div>
+        </div>
+        <hr class="divider" />
+        <div class="field">
+          <label class="lbl"
+            >Posts per month you can commit to <span class="req">*</span></label
+          >
+          <div class="pills">
+            <div class="pill">
+              <input type="radio" name="posts" id="pm1" value="3-5" /><label
+                for="pm1"
+                >3–5 posts</label
+              >
+            </div>
+            <div class="pill">
+              <input type="radio" name="posts" id="pm2" value="6+" /><label
+                for="pm2"
+                >6+ posts 🔥</label
+              >
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl">Anything else? 💌</label>
+          <textarea
+            id="extra"
+            placeholder="Dream collabs, big ideas, or just say hi — we read every single one ✨"
+          ></textarea>
+        </div>
+        <div class="field">
+          <label
+            class="lbl"
+            style="
+              display: flex;
+              align-items: flex-start;
+              gap: 7px;
+              text-transform: none;
+              letter-spacing: 0;
+              font-size: 0.78rem;
+              font-weight: 700;
+              cursor: pointer;
+            "
+          >
+            <input
+              type="checkbox"
+              id="agree"
+              style="
+                width: 16px;
+                height: 16px;
+                flex-shrink: 0;
+                margin-top: 2px;
+                accent-color: var(--pink);
+              "
+            />
+            <span
+              >I'm applying honestly.
+              <span style="color: var(--pink)">*</span></span
+            >
+          </label>
+        </div>
+        <div class="nav">
+          <button class="btn-back" onclick="prevStep(3)">← Back</button>
+          <button class="btn-cta" onclick="submitForm()">
+            ✨ Submit My Application
+          </button>
+        </div>
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="success" id="successPanel">
+        <span class="s-emoji">🌟</span>
+        <h2>You're <span class="pk">In!</span> 💜</h2>
+        <p>
+          Your Charm Squad application is submitted! We'll be reviewing all
+          applications and reaching out in April. While you wait — start glowing
+          up with us right now.
+        </p>
+        <div><div class="s-tag">#charmmebeauty ✨</div></div>
+        <p style="font-size: 0.76rem; margin-top: 8px">
+          Tag your content with <strong>#charmmebeauty</strong> on TikTok &amp;
+          Instagram for a chance to be reposted!
+        </p>
+        <a
+          href="https://charmmebeauty.com"
+          class="s-cta"
+          style="display: inline-block; margin-bottom: 4px"
+          >Charm On 💜</a
+        >
+
+        <!-- BESTIE SECTION -->
+        <div class="bestie-section">
+          <span class="bestie-label">✨ Invite Up to 5 Besties!</span>
+          <p class="bestie-hint">
+            Drop their numbers — we'll reach out when the time is right 💌
+          </p>
+          <div id="bestieFields">
+            <div class="b-row" id="bRow1">
+              <div class="b-wrap">
+                <span class="b-num">1</span
+                ><input
+                  type="tel"
+                  id="bPhone1"
+                  placeholder="Bestie #1 number"
+                  maxlength="14"
+                  oninput="fmtPhone(this)"
+                />
+              </div>
+            </div>
+            <div class="b-row" id="bRow2">
+              <div class="b-wrap">
+                <span class="b-num">2</span
+                ><input
+                  type="tel"
+                  id="bPhone2"
+                  placeholder="Bestie #2 number"
+                  maxlength="14"
+                  oninput="fmtPhone(this)"
+                />
+              </div>
+            </div>
+            <div class="b-row" id="bRow3">
+              <div class="b-wrap">
+                <span class="b-num">3</span
+                ><input
+                  type="tel"
+                  id="bPhone3"
+                  placeholder="Bestie #3 number"
+                  maxlength="14"
+                  oninput="fmtPhone(this)"
+                />
+              </div>
+            </div>
+            <div class="b-row" id="bRow4" style="display: none">
+              <div class="b-wrap">
+                <span class="b-num">4</span
+                ><input
+                  type="tel"
+                  id="bPhone4"
+                  placeholder="Bestie #4 number"
+                  maxlength="14"
+                  oninput="fmtPhone(this)"
+                />
+              </div>
+            </div>
+            <div class="b-row" id="bRow5" style="display: none">
+              <div class="b-wrap">
+                <span class="b-num">5</span
+                ><input
+                  type="tel"
+                  id="bPhone5"
+                  placeholder="Bestie #5 number"
+                  maxlength="14"
+                  oninput="fmtPhone(this)"
+                />
+              </div>
+            </div>
+          </div>
+          <button class="btn-add" id="addBtn" onclick="addBestie()">
+            + Add Another Bestie
+          </button>
+          <a class="btn-bestie" href="#" onclick="sendSMS(event)"
+            ><span>👯</span> Text Your Besties to Join</a
+          >
+          <button class="btn-copy" onclick="copyMsg()">
+            📋 Copy Message Instead
+          </button>
+          <div class="copied-msg" id="copiedConf">
+            ✅ Copied! Paste it in their DMs 💜
+          </div>
+        </div>
+
+        <!-- INSTAGRAM STORY TEMPLATE -->
+        <div class="story-section">
+          <span class="story-section-label"
+            >📸 Your Instagram Story Template</span
+          >
+          <p class="story-section-hint">
+            Add your photo, save it, and post to your story for a chance to get
+            reposted! 🌸
+          </p>
+
+          <!-- Story Canvas -->
+          <div class="story-canvas" id="storyCanvas">
+            <!-- BG blobs -->
+            <div class="story-blob sb1"></div>
+            <div class="story-blob sb2"></div>
+            <div class="story-blob sb3"></div>
+
+            <!-- Floating deco -->
+            <div class="story-deco sd1">🌸</div>
+            <div class="story-deco sd2">⭐</div>
+            <div class="story-deco sd3">✨</div>
+            <div class="story-deco sd4">💜</div>
+            <div class="story-deco sd5">🍓</div>
+
+            <!-- Top text -->
+            <div class="story-top">
+              <div class="story-logo">✨ Charm Me ✨</div>
+              <div class="story-headline">
+                <span class="sh-pink">I just applied</span><br />
+                to the<br />
+                <span class="sh-yellow">Charm Squad!</span> 💜
+              </div>
+            </div>
+
+            <!-- Photo upload zone -->
+            <div
+              class="photo-zone"
+              id="photoZone"
+              onclick="document.getElementById('photoInput').click()"
+            >
+              <div class="pz-icon">📷</div>
+              <div class="pz-text">Tap to add<br />your photo</div>
+            </div>
+            <input
+              type="file"
+              id="photoInput"
+              accept="image/*"
+              onchange="loadPhoto(event)"
+            />
+
+            <!-- Bottom tags -->
+            <div class="story-bottom">
+              <div class="story-tag-line">
+                Tag for a chance to get reposted 💌
+              </div>
+              <div class="story-handles">
+                @charmmebeauty · @lifewithchristirose
+              </div>
+              <div class="story-hashtag">#charmmebeauty #charmsquad</div>
+            </div>
+          </div>
+
+          <!-- Save button -->
+          <button class="btn-save-story" onclick="saveStory()">
+            💾 Save Story to Camera Roll
+          </button>
+          <p class="story-save-hint">
+            Screenshot or save, then post to your Instagram story 📲<br />Tag
+            <strong>@charmmebeauty</strong> &amp;
+            <strong>@lifewithchristirose</strong> for a chance to be reposted!
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- /form-card -->
+
+    <!-- SOCIAL PROOF -->
+    <div class="proof" id="proofBubble">
+      <div class="proof-av" id="pAv">SO</div>
+      <div class="proof-txt" id="pTxt">
+        Sofia from Miami<br /><span class="pk">just applied to the Squad</span>
+      </div>
+    </div>
+
+    <div class="footer">
+      Standard messaging rates may apply. You can unsubscribe anytime.<br />
+      Under 18? Ask a parent before applying. · <a href="#">Privacy Policy</a> ·
+      <a href="#">Terms</a>
+    </div>
+
+    <script>
+      // PROGRESS
+      // let currentStep = 1;
+      // const TOTAL = 3;
+
+      // function updateProgress(s) {
+      //   for (let i = 1; i <= TOTAL; i++) {
+      //     const n = document.getElementById("n" + i),
+      //       l = document.getElementById("sl" + i);
+      //     n.classList.remove("active", "done");
+      //     l.classList.remove("active", "done");
+      //     if (i < s) {
+      //       n.classList.add("done");
+      //       l.classList.add("done");
+      //       n.textContent = "✓";
+      //     } else if (i === s) {
+      //       n.classList.add("active");
+      //       l.classList.add("active");
+      //       n.textContent = i;
+      //     } else {
+      //       n.textContent = i;
+      //     }
+      //   }
+      //   document.getElementById("sFill").style.width =
+      //     ((s - 1) / (TOTAL - 1)) * 100 + "%";
+      // }
+
+      // function showStep(s) {
+      //   for (let i = 1; i <= TOTAL; i++)
+      //     document.getElementById("step" + i).classList.remove("active");
+      //   document.getElementById("step" + s).classList.add("active");
+      //   updateProgress(s);
+      //   window.scrollTo({ top: 0, behavior: "smooth" });
+      // }
+      // function nextStep(f) {
+      //   if (f < TOTAL) {
+      //     currentStep = f + 1;
+      //     showStep(currentStep);
+      //   }
+      // }
+      // function prevStep(f) {
+      //   if (f > 1) {
+      //     currentStep = f - 1;
+      //     showStep(currentStep);
+      //   }
+      // }
+
+      let currentStep = 1;
+      const TOTAL = 3;
+
+      function updateProgress(s) {
+        for (let i = 1; i <= TOTAL; i++) {
+          const n = document.getElementById("n" + i);
+          const l = document.getElementById("sl" + i);
+          if (!n || !l) {
+            continue;
+          }
+
+          n.className = "s-dot";
+          l.className = "s-lbl";
+
+          if (i < s) {
+            n.classList.add("done");
+            l.classList.add("done");
+            n.textContent = "✓";
+          } else if (i === s) {
+            n.classList.add("active");
+            l.classList.add("active");
+            n.textContent = i;
+          } else {
+            n.textContent = i;
+          }
+        }
+        const fill = document.getElementById("sFill");
+        if (fill) fill.style.width = ((s - 1) / (TOTAL - 1)) * 100 + "%";
+      }
+
+      function showStep(n) {
+        document
+          .querySelectorAll(".panel")
+          .forEach((p) => p.classList.remove("active"));
+        const panel = document.getElementById(`step${n}`);
+        if (panel) panel.classList.add("active");
+        currentStep = n;
+        updateProgress(n);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function nextStep(from) {
+        if (!validateStep(from)) return;
+        showStep(from + 1);
+      }
+
+      function prevStep(from) {
+        showStep(from - 1);
+      }
+
+      function submitForm() {
+        for (let i = 1; i <= TOTAL; i++)
+          document.getElementById("step" + i).classList.remove("active");
+        const pa = document.getElementById("progressArea");
+        pa.style.transition = "opacity .4s";
+        pa.style.opacity = "0";
+        document.getElementById("successPanel").classList.add("on");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // BESTIE
+      let bCount = 3;
+      function fmtPhone(el) {
+        let v = el.value.replace(/\D/g, "").substring(0, 10);
+        if (v.length >= 6)
+          v =
+            "(" +
+            v.substring(0, 3) +
+            ") " +
+            v.substring(3, 6) +
+            "-" +
+            v.substring(6);
+        else if (v.length >= 3)
+          v = "(" + v.substring(0, 3) + ") " + v.substring(3);
+        el.value = v;
+      }
+      function addBestie() {
+        if (bCount >= 5) return;
+        bCount++;
+        const r = document.getElementById("bRow" + bCount);
+        if (r) {
+          r.style.display = "block";
+          document.getElementById("bPhone" + bCount).focus();
+        }
+        if (bCount >= 5) {
+          const b = document.getElementById("addBtn");
+          b.disabled = true;
+          b.textContent = "✨ Squad is full!";
+        }
+      }
+
+      const inviteMsg =
+        "omg I just applied to be in the Charm Squad by Charm Me Beauty 🌸✨ you literally HAVE to apply too — we could be in it together 💜 apply here: https://charmmebeauty.com/squad #charmmebeauty";
+      function sendSMS(e) {
+        e.preventDefault();
+        sendBestiesToKlaviyo();
+        const enc = encodeURIComponent(inviteMsg);
+        const ios = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        // window.location.href = ios ? "sms:&body=" + enc : "sms:?body=" + enc;
+      }
+      function copyMsg() {
+        const done = () => {
+          const el = document.getElementById("copiedConf");
+          el.classList.add("on");
+          setTimeout(() => el.classList.remove("on"), 3000);
+        };
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(inviteMsg).then(done);
+        } else {
+          const t = document.createElement("textarea");
+          t.value = inviteMsg;
+          document.body.appendChild(t);
+          t.select();
+          document.execCommand("copy");
+          document.body.removeChild(t);
+          done();
+        }
+      }
+
+      // STORY TEMPLATE
+      function loadPhoto(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+          const zone = document.getElementById("photoZone");
+          zone.innerHTML = `<img src="${ev.target.result}" alt="Your photo"/>`;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function saveStory() {
+        const canvas = document.createElement("canvas");
+        // 9:16 Instagram story dimensions
+        canvas.width = 1080;
+        canvas.height = 1920;
+        const ctx = canvas.getContext("2d");
+
+        // Background gradient
+        const grad = ctx.createLinearGradient(
+          0,
+          0,
+          canvas.width,
+          canvas.height,
+        );
+        grad.addColorStop(0, "#FFB8D9");
+        grad.addColorStop(0.4, "#F5A0FF");
+        grad.addColorStop(0.8, "#B8A0FF");
+        grad.addColorStop(1, "#9B72CF");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Blobs
+        ctx.globalAlpha = 0.3;
+        ctx.fillStyle = "#FF4D9E";
+        ctx.beginPath();
+        ctx.arc(1000, -60, 280, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#fff";
+        ctx.beginPath();
+        ctx.arc(-60, 1980, 220, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#C84BDE";
+        ctx.beginPath();
+        ctx.arc(-40, 760, 160, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+
+        // Top section text
+        ctx.textAlign = "center";
+
+        // Logo
+        ctx.font = "900 52px Nunito, sans-serif";
+        ctx.fillStyle = "#fff";
+        ctx.shadowColor = "rgba(0,0,0,.15)";
+        ctx.shadowBlur = 10;
+        ctx.fillText("✨ Charm Me ✨", canvas.width / 2, 140);
+
+        // Headline
+        ctx.shadowBlur = 16;
+        ctx.font = "italic 900 110px Nunito, sans-serif";
+        ctx.fillStyle = "#FFD6EE";
+        ctx.fillText("I just applied", canvas.width / 2, 280);
+        ctx.font = "900 100px Nunito, sans-serif";
+        ctx.fillStyle = "#fff";
+        ctx.fillText("to the", canvas.width / 2, 390);
+        ctx.fillStyle = "#FFE566";
+        ctx.fillText("Charm Squad! 💜", canvas.width / 2, 500);
+        ctx.shadowBlur = 0;
+
+        // Photo circle
+        const photoImg = document.querySelector("#photoZone img");
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        const r = 310;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.clip();
+        if (photoImg) {
+          const img = new Image();
+          img.src = photoImg.src;
+          // Draw synchronously since already loaded
+          ctx.drawImage(img, cx - r, cy - r, r * 2, r * 2);
+        } else {
+          // Placeholder circle
+          ctx.fillStyle = "rgba(255,255,255,.25)";
+          ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+        }
+        ctx.restore();
+
+        // Circle border
+        ctx.strokeStyle = "rgba(255,255,255,.85)";
+        ctx.lineWidth = 14;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Deco emojis
+        ctx.font = "72px sans-serif";
+        ctx.fillText("🌸", 90, 220);
+        ctx.fillText("⭐", 980, 220);
+        ctx.fillText("✨", 1010, 660);
+        ctx.fillText("💜", 70, 1320);
+        ctx.fillText("🍓", 990, 1720);
+
+        // Bottom overlay
+        const botGrad = ctx.createLinearGradient(
+          0,
+          canvas.height - 420,
+          0,
+          canvas.height,
+        );
+        botGrad.addColorStop(0, "rgba(30,18,64,0)");
+        botGrad.addColorStop(1, "rgba(30,18,64,.6)");
+        ctx.fillStyle = botGrad;
+        ctx.fillRect(0, canvas.height - 420, canvas.width, 420);
+
+        // Bottom text
+        ctx.textAlign = "center";
+        ctx.fillStyle = "rgba(255,255,255,.82)";
+        ctx.font = "700 44px Nunito, sans-serif";
+        ctx.fillText(
+          "Tag for a chance to get reposted 💌",
+          canvas.width / 2,
+          canvas.height - 290,
+        );
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "900 58px Nunito, sans-serif";
+        ctx.shadowColor = "rgba(0,0,0,.2)";
+        ctx.shadowBlur = 8;
+        ctx.fillText(
+          "@charmmebeauty · @lifewithchristirose",
+          canvas.width / 2,
+          canvas.height - 200,
+        );
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle = "rgba(255,220,240,.9)";
+        ctx.font = "800 46px Nunito, sans-serif";
+        ctx.fillText(
+          "#charmmebeauty  #charmsquad",
+          canvas.width / 2,
+          canvas.height - 120,
+        );
+
+        // Download
+        const link = document.createElement("a");
+        link.download = "charm-squad-story.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      }
+
+      const pData = [
+        { i: "SO", n: "Sofia", c: "Miami" },
+        { i: "ZA", n: "Zara", c: "LA" },
+        { i: "MI", n: "Mia", c: "Atlanta" },
+        { i: "JA", n: "Jasmine", c: "Houston" },
+        { i: "LE", n: "Lexi", c: "NYC" },
+        { i: "AV", n: "Ava", c: "Chicago" },
+      ];
+      let pIdx = 0;
+      setInterval(() => {
+        pIdx = (pIdx + 1) % pData.length;
+        const d = pData[pIdx],
+          el = document.getElementById("proofBubble");
+        el.style.opacity = "0";
+        el.style.transform = "translateY(10px)";
+        setTimeout(() => {
+          document.getElementById("pAv").textContent = d.i;
+          document.getElementById("pTxt").innerHTML =
+            `${d.n} from ${d.c}<br><span class="pk">just applied to the Squad</span>`;
+          el.style.opacity = "1";
+          el.style.transform = "translateY(0)";
+        }, 400);
+      }, 5000);
+
+      updateProgress(1);
+    </script>
+
+    <!-- Klaviyo Integration -->
+
+    <script>
+      // Inline error helpers
+
+      /**
+       * Show an error message directly under a field.
+       * Inserts a <span class="field-error"> after the input/select/textarea.
+       * If one already exists it just updates the text.
+       */
+      function showError(fieldId, message) {
+        const field = document.getElementById(fieldId);
+        if (!field) return;
+
+        // Mark the field itself as invalid
+        field.classList.add("field-invalid");
+
+        // Find or create the error span
+        let errEl = field.parentElement.querySelector(".field-error");
+        if (!errEl) {
+          errEl = document.createElement("span");
+          errEl.className = "field-error";
+          // Insert right after the input element (not at the very end of .field)
+          field.insertAdjacentElement("afterend", errEl);
+        }
+        errEl.textContent = message;
+        errEl.style.display = "block";
+      }
+
+      /**
+       * Show an error under a pill group (radio buttons have no single element ID).
+       * Looks for an existing .field-error inside the same .field wrapper.
+       */
+      function showGroupError(radioName, message) {
+        const anyRadio = document.querySelector(`input[name="${radioName}"]`);
+        if (!anyRadio) return;
+        const fieldWrapper = anyRadio.closest(".field");
+        if (!fieldWrapper) return;
+
+        let errEl = fieldWrapper.querySelector(".field-error");
+        if (!errEl) {
+          errEl = document.createElement("span");
+          errEl.className = "field-error";
+          fieldWrapper.appendChild(errEl);
+        }
+        errEl.textContent = message;
+        errEl.style.display = "block";
+      }
+
+      /** Clear all errors inside a given step panel */
+      function clearErrors(stepId) {
+        const panel = document.getElementById(stepId);
+        if (!panel) return;
+        panel.querySelectorAll(".field-error").forEach((el) => {
+          el.style.display = "none";
+          el.textContent = "";
+        });
+        panel.querySelectorAll(".field-invalid").forEach((el) => {
+          el.classList.remove("field-invalid");
+        });
+      }
+
+      /** Clear the error for a single field as soon as the user starts fixing it */
+      function clearError(fieldId) {
+        const field = document.getElementById(fieldId);
+        if (!field) return;
+        field.classList.remove("field-invalid");
+        const errEl = field.parentElement.querySelector(".field-error");
+        if (errEl) {
+          errEl.style.display = "none";
+          errEl.textContent = "";
+        }
+      }
+
+      // Auto-clear errors on input / change — wire up once the DOM is ready
+      document.addEventListener("DOMContentLoaded", () => {
+        [
+          "firstName",
+          "lastName",
+          "email",
+          "phone",
+          "location",
+          "tiktok",
+          "instagram",
+          "youtube",
+          "bestPost",
+          "whyJoin",
+          "extra",
+        ].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.addEventListener("input", () => clearError(id));
+        });
+
+        const age = document.getElementById("age");
+        if (age) age.addEventListener("change", () => clearError("age"));
+
+        // Radio groups: clear group error when any option is picked
+        ["platform", "heard", "posts"].forEach((name) => {
+          document
+            .querySelectorAll(`input[name="${name}"]`)
+            .forEach((radio) => {
+              radio.addEventListener("change", () => {
+                const fieldWrapper = radio.closest(".field");
+                if (!fieldWrapper) return;
+                const errEl = fieldWrapper.querySelector(".field-error");
+                if (errEl) {
+                  errEl.style.display = "none";
+                  errEl.textContent = "";
+                }
+              });
+            });
+        });
+      });
+
+      // Validation
+
+      function validateStep(step) {
+        clearErrors(`step${step}`);
+        let valid = true;
+
+        if (step === 1) {
+          const firstName = document.getElementById("firstName").value.trim();
+          const lastName = document.getElementById("lastName").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const age = document.getElementById("age").value;
+          const location = document.getElementById("location").value.trim();
+
+          if (!firstName) {
+            showError("firstName", "Please enter your first name.");
+            valid = false;
+          }
+          if (!lastName) {
+            showError("lastName", "Please enter your last name.");
+            valid = false;
+          }
+          if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showError("email", "Please enter a valid email address.");
+            valid = false;
+          }
+          if (!age) {
+            showError("age", "Please select your age.");
+            valid = false;
+          }
+          if (!location) {
+            showError("location", "Please enter your location.");
+            valid = false;
+          }
+        }
+
+        if (step === 2) {
+          const tiktok = document.getElementById("tiktok").value.trim();
+          const platform = document.querySelector(
+            'input[name="platform"]:checked',
+          );
+
+          if (!tiktok) {
+            showError("tiktok", "Please enter your TikTok handle.");
+            valid = false;
+          }
+          if (!platform) {
+            showGroupError("platform", "Please select your main platform.");
+            valid = false;
+          }
+        }
+
+        if (step === 3) {
+          const whyJoin = document.getElementById("whyJoin").value.trim();
+          const heard = document.querySelector('input[name="heard"]:checked');
+          const posts = document.querySelector('input[name="posts"]:checked');
+          const agreed = document.getElementById("agree").checked;
+
+          if (!whyJoin) {
+            showError("whyJoin", "Please tell us why you want to join.");
+            valid = false;
+          }
+          if (!heard) {
+            showGroupError(
+              "heard",
+              "Please tell us how you heard about Charm Me.",
+            );
+            valid = false;
+          }
+          if (!posts) {
+            showGroupError(
+              "posts",
+              "Please select how many posts you can commit to.",
+            );
+            valid = false;
+          }
+          if (!agreed) {
+            showGroupError("agree", "Please check the box to confirm.");
+            valid = false;
+          }
+        }
+
+        // Scroll to the first error so it's visible on mobile
+        if (!valid) {
+          const firstErr = document.querySelector(
+            `#step${step} .field-error[style*="block"]`,
+          );
+          if (firstErr)
+            firstErr.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+
+        return valid;
+      }
+
+      // ── Phone formatter (keep your existing fmtPhone if you have one) ─────────────
+
+      function fmtPhone(input) {
+        let v = input.value.replace(/\D/g, "").substring(0, 10);
+        if (v.length >= 6)
+          v = `(${v.slice(0, 3)}) ${v.slice(3, 6)}-${v.slice(6)}`;
+        else if (v.length >= 3) v = `(${v.slice(0, 3)}) ${v.slice(3)}`;
+        input.value = v;
+      }
+
+      // ── Bestie helpers ────────────────────────────────────────────────────────────
+
+      let bestieCount = 3; // rows 1–3 shown by default
+
+      function addBestie() {
+        if (bestieCount >= 5) {
+          document.getElementById("addBtn").style.display = "none";
+          return;
+        }
+        bestieCount++;
+        const row = document.getElementById(`bRow${bestieCount}`);
+        if (row) row.style.display = "";
+        if (bestieCount >= 5)
+          document.getElementById("addBtn").style.display = "none";
+      }
+
+      function collectBesties() {
+        const phones = [];
+        for (let i = 1; i <= 5; i++) {
+          const el = document.getElementById(`bPhone${i}`);
+          if (el && el.value.trim()) phones.push(el.value.trim());
+        }
+        return phones;
+      }
+
+      // ── Main submit ───────────────────────────────────────────────────────────────
+
+      async function submitForm() {
+        if (!validateStep(3)) return;
+
+        const btn = document.querySelector("#step3 .btn-cta");
+        btn.disabled = true;
+        btn.textContent = "Submitting… 💜";
+
+        const payload = {
+          firstName: document.getElementById("firstName").value.trim(),
+          lastName: document.getElementById("lastName").value.trim(),
+          email: document.getElementById("email").value.trim(),
+          phone: document.getElementById("phone").value.trim(),
+          tiktok: document.getElementById("tiktok").value.trim(),
+          instagram: document.getElementById("instagram").value.trim(),
+          youtube: document.getElementById("youtube").value.trim(),
+          primaryPlatform:
+            (document.querySelector('input[name="platform"]:checked') || {})
+              .value || "",
+          bestPost: document.getElementById("bestPost").value.trim(),
+          whyJoin: document.getElementById("whyJoin").value.trim(),
+          heardFrom:
+            (document.querySelector('input[name="heard"]:checked') || {})
+              .value || "",
+          postsPerMonth:
+            (document.querySelector('input[name="posts"]:checked') || {})
+              .value || "",
+          besties: [], // populated after success panel shown
+        };
+
+        try {
+          const res = await fetch("/.netlify/functions/klaviyo", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.error || `Server error ${res.status}`);
+          }
+
+          // ── Show success panel ──────────────────────────────────────────────────
+          document
+            .querySelectorAll(".panel")
+            .forEach((p) => p.classList.remove("active"));
+          document.getElementById("successPanel").style.display = "block";
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } catch (err) {
+          console.error("Submit error:", err);
+          alert(
+            "Something went wrong — please try again. If the issue continues, email us directly 💜",
+          );
+          btn.disabled = false;
+          btn.textContent = "✨ Submit My Application";
+        }
+      }
+
+      // ── Bestie SMS send (after success panel) ────────────────────────────────────
+
+      async function sendBestiesToKlaviyo() {
+        const besties = collectBesties();
+        if (!besties.length) return;
+
+        const email = document.getElementById("email")?.value?.trim() || "";
+
+        try {
+          await fetch("/.netlify/functions/klaviyo", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email,
+              besties,
+              _bestiesOnly: true,
+            }),
+          });
+          alert(
+            "Your besties have been added to the invite list! We'll reach out to them when the time is right 💌",
+          );
+        } catch (err) {
+          console.error("Bestie sync error:", err);
+        }
+      }
+    </script>
+  </body>
+</html>

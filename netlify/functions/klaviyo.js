@@ -1,0 +1,419 @@
+// Docs on request and context https://docs.netlify.com/functions/build/#code-your-function-2
+// export const handler =  async (request, context) => {
+//   try {
+//     const response = await fetch(
+//       'https://a.klaviyo.com/api/profiles',
+//       {
+//         headers: {
+//           'Authorization': `Klaviyo-API-Key ${process.env.KLAVIYO_PRIVATE_KEY}`,
+//           'revision': '2024-10-15',
+//           'accept': 'application/vnd.api+json'
+//         }
+//       }
+//     );
+
+//     const data = await response.json();
+
+//     if (response.ok) {
+//       const count = data?.data.length || 0;
+//       return {
+//         statusCode: 200,
+//         headers: {
+//           'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({ count })
+//       };
+//     } else {
+//       return {
+//         statusCode: response.status,
+//         body: JSON.stringify({ error: 'Failed to fetch profiles' })
+//       };
+//     }
+//   } catch (error) {
+//     console.error('Error:', error);
+//     return {
+//       statusCode: 500,
+//       body: JSON.stringify({ error: 'Server error' })
+//     };
+//   }
+// }
+
+
+// export const handler = async (request, context) => {
+//   try {
+//     // Replace with your actual list ID (the one you're using for email subscriptions)
+//     const listId = 'Rt6z2E';
+    
+//     const response = await fetch(
+//       `https://a.klaviyo.com/api/lists/${listId}?additional-fields[list]=profile_count`,
+//       {
+//         headers: {
+//           'Authorization': `Klaviyo-API-Key ${process.env.KLAVIYO_PRIVATE_KEY}`,
+//           'revision': '2024-10-15',
+//           'accept': 'application/vnd.api+json'
+//         }
+//       }
+//     );
+
+//     const data = await response.json();
+
+//     if (response.ok) {
+//       // The profile_count will be in the attributes
+//       const count = data?.data?.attributes?.profile_count || 0;
+      
+//       return {
+//         statusCode: 200,
+//         headers: {
+//           'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({ count })
+//       };
+//     } else {
+//       return {
+//         statusCode: response.status,
+//         body: JSON.stringify({ error: 'Failed to fetch list count' })
+//       };
+//     }
+//   } catch (error) {
+//     console.error('Error:', error);
+//     return {
+//       statusCode: 500,
+//       body: JSON.stringify({ error: 'Server error' })
+//     };
+//   }
+// }
+
+
+
+const KLAVIYO_API_KEY = process.env.KLAVIYO_PRIVATE_KEY;
+const KLAVIYO_LIST_ID = process.env.KLAVIYO_LIST_ID;
+const SEGMENT_ID = process.env.KLAVIYO_SEGMENT_ID; 
+const KLAVIYO_API     = "https://a.klaviyo.com/api";
+const REVISION        = "2024-10-15"; // latest stable revision
+
+
+// exports.handler = async () => {
+//   try {
+//     const response = await fetch(
+//       `${KLAVIYO_API}/segments/${SEGMENT_ID}?additional-fields[segment]=profile_count`,
+//       {
+//         headers: {
+//           Authorization: `Klaviyo-API-Key ${process.env.KLAVIYO_PRIVATE_KEY}`,
+//           revision: "2026-01-15",
+//           accept: "application/vnd.api+json"
+//         }
+//       }
+//     );
+
+//     const data = await response.json();
+
+//     return {
+//       statusCode: 200,
+//       headers: {
+//         "Content-Type": "application/json"
+//       },
+//       body: JSON.stringify({
+//         count: data.data.attributes.profile_count
+//       })
+//     };
+
+//   } catch (error) {
+//     console.error(error);
+
+//     return {
+//       statusCode: 500,
+//       body: JSON.stringify({
+//         error: "Failed to fetch profile count"
+//       })
+//     };
+//   }
+// };
+
+
+
+// E.164 phone formatter
+// Klaviyo rejects anything that isn't E.164 (e.g. +15551234567).
+// Strips all non-digits, assumes US (+1) if 10 digits, handles 11-digit
+// numbers starting with 1. Returns null if format is unrecognisable.
+function toE164(raw) {
+  if (!raw) return null;
+  const digits = raw.replace(/\D/g, "");
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`;
+  return null;
+}
+
+// Helper: upsert a profile and return its ID
+// POST to create. On 409 (duplicate), Klaviyo returns the existing profile ID —
+// we then PATCH that profile to merge in the new properties.
+async function upsertProfile(attributes) {
+  const res = await fetch(`${KLAVIYO_API}/profiles/`, {
+    method: "POST",
+    headers: {
+      accept:         "application/json",
+      revision:       REVISION,
+      "content-type": "application/json",
+      Authorization:  `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+    },
+    body: JSON.stringify({
+      data: { type: "profile", attributes },
+    }),
+  });
+
+  // 409 = profile already exists with this email/phone.
+  // Klaviyo includes the existing profile ID in the error, PATCH it instead.
+  if (res.status === 409) {
+    const errJson = await res.json();
+    const existingId = errJson?.errors?.[0]?.meta?.duplicate_profile_id;
+    if (!existingId) throw new Error("Klaviyo 409 but no duplicate_profile_id returned");
+
+    const patchRes = await fetch(`${KLAVIYO_API}/profiles/${existingId}/`, {
+      method: "PATCH",
+      headers: {
+        accept:         "application/json",
+        revision:       REVISION,
+        "content-type": "application/json",
+        Authorization:  `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+      },
+      body: JSON.stringify({
+        data: { type: "profile", id: existingId, attributes },
+      }),
+    });
+
+    if (!patchRes.ok) {
+      const patchErr = await patchRes.text();
+      throw new Error(`Klaviyo PATCH profile failed: ${patchRes.status} ${patchErr}`);
+    }
+
+    const patchJson = await patchRes.json();
+    return patchJson.data.id;
+  }
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Klaviyo upsertProfile failed: ${res.status} ${err}`);
+  }
+
+  const json = await res.json();
+  return json.data.id;
+}
+
+// Helper: add a profile to the master list
+async function addToList(profileId) {
+  const res = await fetch(
+    `${KLAVIYO_API}/lists/${KLAVIYO_LIST_ID}/relationships/profiles/`,
+    {
+      method: "POST",
+      headers: {
+        accept:         "application/json",
+        revision:       REVISION,
+        "content-type": "application/json",
+        Authorization:  `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+      },
+      body: JSON.stringify({
+        data: [{ type: "profile", id: profileId }],
+      }),
+    }
+  );
+
+  // 204 = success (no body), 400 = already on list
+  if (!res.ok && res.status !== 400) {
+    const err = await res.text();
+    throw new Error(`Klaviyo addToList failed: ${res.status} ${err}`);
+  }
+}
+
+// Netlify ESM export
+export const handler = async (event) => {
+
+  const headers = {
+    "Access-Control-Allow-Origin":  "*",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Content-Type":                 "application/json",
+  };
+
+  // Handle CORS preflight
+  if (event.httpMethod === "OPTIONS") {
+    return { statusCode: 200, headers, body: "" };
+  }
+
+    // ── GET: return total profile count ────────────────────────────────────────
+  if (event.httpMethod === "GET") {
+    try {
+      let totalCount = 0;
+      let nextUrl = `${KLAVIYO_API}/profiles/`;
+
+      while (nextUrl) {
+        const res = await fetch(nextUrl, {
+          headers: {
+            Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+            revision:       REVISION,
+            accept:         "application/vnd.api+json",
+          },
+        });
+
+        if (!res.ok) {
+          const err = await res.text();
+          return { statusCode: res.status, headers, body: JSON.stringify({ error: "Failed to fetch profiles", detail: err }) };
+        }
+
+        const data = await res.json();
+        totalCount += data.data.length;
+        nextUrl = data.links?.next || null;
+      }
+
+      return { statusCode: 200, headers, body: JSON.stringify({ count: totalCount }) };
+    } catch (err) {
+      console.error("Profile count error:", err);
+      return { statusCode: 500, headers, body: JSON.stringify({ error: err.message }) };
+    }
+  }
+
+  // Only allow POST
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, headers, body: JSON.stringify({ error: "Method Not Allowed" }) };
+  }
+
+  // Parse body
+  let body;
+  try {
+    body = JSON.parse(event.body);
+  } catch {
+    return { statusCode: 400, headers, body: JSON.stringify({ error: "Invalid JSON" }) };
+  }
+
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    tiktok,
+    instagram,
+    youtube,
+    primaryPlatform,
+    bestPost,
+    whyJoin,
+    heardFrom,
+    postsPerMonth,
+    besties = [],
+    _bestiesOnly = false,
+  } = body;
+
+  try {
+
+    // BESTIES-ONLY path
+    // Called from the success panel after the main form is already submitted.
+    // Creates bestie profiles AND patches bestie_phone_1…5 back onto the applicant.
+    if (_bestiesOnly) {
+      const bestieResults = await processBesties(besties, email);
+
+      // Patch bestie_phone_1…5 onto the applicant's existing profile
+      const created = bestieResults.filter((b) => b.status === "created");
+      if (created.length) {
+        const bestieProps = {};
+        created.forEach((b, i) => {
+          bestieProps[`bestie_phone_${i + 1}`] = b.phone;
+        });
+        await upsertProfile({ email, properties: bestieProps });
+      }
+
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ success: true, besties: bestieResults }),
+      };
+    }
+
+    // FULL SUBMISSION path
+
+    // Format applicant phone — skip if unparseable
+    const applicantPhone = toE164(phone);
+
+    // 1. Build the applicant profile
+    const applicantProps = {
+      email,
+      first_name: firstName,
+      last_name:  lastName,
+      ...(applicantPhone && { phone_number: applicantPhone }),
+      properties: {
+        charm_squad_applicant: true,
+        tiktok_handle:         tiktok          || "",
+        instagram_handle:      instagram       || "",
+        youtube_handle:        youtube         || "",
+        primary_platform:      primaryPlatform || "",
+        best_post_link:        bestPost        || "",
+        why_join:              whyJoin         || "",
+        heard_from:            heardFrom       || "",
+        posts_per_month:       postsPerMonth   || "",
+        application_date:      new Date().toISOString(),
+      },
+    };
+
+    // 2. Upsert applicant + add to master list
+    const applicantId = await upsertProfile(applicantProps);
+    await addToList(applicantId);
+
+    // 3. Create bestie referral profiles
+    const bestieResults = await processBesties(besties, email);
+
+    // 4. Re-upsert applicant with bestie_phone_1…5 populated
+    const created = bestieResults.filter((b) => b.status === "created");
+    if (created.length) {
+      created.forEach((b, i) => {
+        applicantProps.properties[`bestie_phone_${i + 1}`] = b.phone;
+      });
+      await upsertProfile(applicantProps);
+    }
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        success: true,
+        applicantId,
+        besties: bestieResults,
+      }),
+    };
+
+  } catch (err) {
+    console.error("Klaviyo integration error:", err);
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: err.message }),
+    };
+  }
+};
+
+// Helper: process bestie phone numbers into Klaviyo profiles
+async function processBesties(besties, referredByEmail) {
+  const results = [];
+  for (let i = 0; i < besties.length; i++) {
+    const rawPhone    = besties[i]?.trim();
+    const bestiePhone = toE164(rawPhone);
+
+    if (!bestiePhone) {
+      console.warn(`Bestie ${i + 1}: could not parse "${rawPhone}", skipping.`);
+      results.push({ phone: rawPhone, status: "skipped", reason: "invalid phone format" });
+      continue;
+    }
+
+    try {
+      const bestieId = await upsertProfile({
+        phone_number: bestiePhone,
+        properties: {
+          charm_squad_referral: true,
+          referred_by:          referredByEmail,
+          referral_date:        new Date().toISOString(),
+        },
+      });
+
+      await addToList(bestieId);
+      results.push({ phone: bestiePhone, status: "created" });
+    } catch (err) {
+      console.error(`Bestie ${i + 1} error:`, err.message);
+      results.push({ phone: bestiePhone, status: "error", error: err.message });
+    }
+  }
+  return results;
+}
