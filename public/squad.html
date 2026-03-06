@@ -1936,7 +1936,7 @@
         if (panel) panel.classList.add("active");
         currentStep = n;
         updateProgress(n);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        panel.scrollIntoView({ behavior: "smooth" });
       }
 
       function nextStep(from) {
@@ -1955,7 +1955,9 @@
         pa.style.transition = "opacity .4s";
         pa.style.opacity = "0";
         document.getElementById("successPanel").classList.add("on");
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        document
+          .getElementById("successPanel")
+          .scrollIntoView({ behavior: "smooth" });
       }
 
       // BESTIE
