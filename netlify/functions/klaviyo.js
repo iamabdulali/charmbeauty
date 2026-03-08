@@ -43,7 +43,7 @@
 //   try {
 //     // Replace with your actual list ID (the one you're using for email subscriptions)
 //     const listId = 'Rt6z2E';
-    
+
 //     const response = await fetch(
 //       `https://a.klaviyo.com/api/lists/${listId}?additional-fields[list]=profile_count`,
 //       {
@@ -60,7 +60,7 @@
 //     if (response.ok) {
 //       // The profile_count will be in the attributes
 //       const count = data?.data?.attributes?.profile_count || 0;
-      
+
 //       return {
 //         statusCode: 200,
 //         headers: {
@@ -86,10 +86,13 @@
 
 
 const KLAVIYO_API_KEY = process.env.KLAVIYO_PRIVATE_KEY;
-const KLAVIYO_LIST_ID = process.env.KLAVIYO_LIST_ID;
-const SEGMENT_ID = process.env.KLAVIYO_SEGMENT_ID; 
-const KLAVIYO_API     = "https://a.klaviyo.com/api";
-const REVISION        = "2024-10-15"; // latest stable revision
+const KLAVIYO_EMAIL_LIST_ID = process.env.KLAVIYO_EMAIL_LIST;
+const KLAVIYO_SMS_LIST_ID = process.env.KLAVIYO_SMS_LIST;
+
+console.log(KLAVIYO_API_KEY)
+const SEGMENT_ID = process.env.KLAVIYO_SEGMENT_ID;
+const KLAVIYO_API = "https://a.klaviyo.com/api";
+const REVISION = "2024-10-15"; // latest stable revision
 
 
 // exports.handler = async () => {
@@ -150,10 +153,10 @@ async function upsertProfile(attributes) {
   const res = await fetch(`${KLAVIYO_API}/profiles/`, {
     method: "POST",
     headers: {
-      accept:         "application/json",
-      revision:       REVISION,
+      accept: "application/json",
+      revision: REVISION,
       "content-type": "application/json",
-      Authorization:  `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+      Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
     },
     body: JSON.stringify({
       data: { type: "profile", attributes },
@@ -170,10 +173,10 @@ async function upsertProfile(attributes) {
     const patchRes = await fetch(`${KLAVIYO_API}/profiles/${existingId}/`, {
       method: "PATCH",
       headers: {
-        accept:         "application/json",
-        revision:       REVISION,
+        accept: "application/json",
+        revision: REVISION,
         "content-type": "application/json",
-        Authorization:  `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+        Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
       },
       body: JSON.stringify({
         data: { type: "profile", id: existingId, attributes },
@@ -201,14 +204,14 @@ async function upsertProfile(attributes) {
 // Helper: add a profile to the master list
 async function addToList(profileId) {
   const res = await fetch(
-    `${KLAVIYO_API}/lists/${KLAVIYO_LIST_ID}/relationships/profiles/`,
+    `${KLAVIYO_API}/lists/${KLAVIYO_EMAIL_LIST_ID}/relationships/profiles/`,
     {
       method: "POST",
       headers: {
-        accept:         "application/json",
-        revision:       REVISION,
+        accept: "application/json",
+        revision: REVISION,
         "content-type": "application/json",
-        Authorization:  `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+        Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
       },
       body: JSON.stringify({
         data: [{ type: "profile", id: profileId }],
@@ -227,9 +230,9 @@ async function addToList(profileId) {
 export const handler = async (event) => {
 
   const headers = {
-    "Access-Control-Allow-Origin":  "*",
+    "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Content-Type",
-    "Content-Type":                 "application/json",
+    "Content-Type": "application/json",
   };
 
   // Handle CORS preflight
@@ -237,37 +240,111 @@ export const handler = async (event) => {
     return { statusCode: 200, headers, body: "" };
   }
 
-    // ── GET: return total profile count ────────────────────────────────────────
-  if (event.httpMethod === "GET") {
-    try {
-      let totalCount = 0;
-      let nextUrl = `${KLAVIYO_API}/profiles/`;
-
-      while (nextUrl) {
-        const res = await fetch(nextUrl, {
-          headers: {
-            Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
-            revision:       REVISION,
-            accept:         "application/vnd.api+json",
-          },
-        });
-
-        if (!res.ok) {
-          const err = await res.text();
-          return { statusCode: res.status, headers, body: JSON.stringify({ error: "Failed to fetch profiles", detail: err }) };
+  // ── GET: return total profile count ────────────────────────────────────────
+if (event.httpMethod === "GET") {
+  try {
+    // Helper function to handle rate limiting with retry
+    const fetchWithRetry = async (url, options, retries = 2) => {
+      for (let i = 0; i <= retries; i++) {
+        const response = await fetch(url, options);
+        
+        if (response.status === 429) {
+          const errorData = await response.json();
+          const retryAfter = errorData.errors?.[0]?.detail?.match(/(\d+) second/)?.[1] || 1;
+          
+          if (i < retries) {
+            console.log(`Rate limited. Retrying after ${retryAfter} seconds...`);
+            await new Promise(resolve => setTimeout(resolve, (parseInt(retryAfter) + 0.5) * 1000));
+            continue;
+          }
         }
-
-        const data = await res.json();
-        totalCount += data.data.length;
-        nextUrl = data.links?.next || null;
+        
+        return response;
       }
+    };
 
-      return { statusCode: 200, headers, body: JSON.stringify({ count: totalCount }) };
-    } catch (err) {
-      console.error("Profile count error:", err);
-      return { statusCode: 500, headers, body: JSON.stringify({ error: err.message }) };
+    // Fetch FIRST list
+    const emailResponse = await fetchWithRetry(
+      `https://a.klaviyo.com/api/lists/${KLAVIYO_EMAIL_LIST_ID}/?additional-fields[list]=profile_count`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+          revision: "2024-10-15",
+          accept: "application/json",
+        },
+      }
+    );
+
+    // Wait 1 second between requests to avoid rate limit
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Fetch SECOND list
+    const smsResponse = await fetchWithRetry(
+      `https://a.klaviyo.com/api/lists/${KLAVIYO_SMS_LIST_ID}/?additional-fields[list]=profile_count`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+          revision: "2024-10-15",
+          accept: "application/json",
+        },
+      }
+    );
+
+    // Check for errors
+    if (!emailResponse.ok || !smsResponse.ok) {
+      const emailError = !emailResponse.ok ? await emailResponse.text() : null;
+      const smsError = !smsResponse.ok ? await smsResponse.text() : null;
+      
+      console.error("Klaviyo API errors:", { emailError, smsError });
+      
+      return {
+        statusCode: emailResponse.status || smsResponse.status,
+        body: JSON.stringify({
+          error: "Failed to fetch list data from Klaviyo",
+          details: { emailError, smsError },
+        }),
+      };
     }
+
+    // Parse responses
+    const [emailData, smsData] = await Promise.all([
+      emailResponse.json(),
+      smsResponse.json(),
+    ]);
+
+    console.log("Email data:", emailData);
+    console.log("SMS data:", smsData);
+
+    // Extract profile counts
+    const emailCount = emailData.data?.attributes?.profile_count || 0;
+    const smsCount = smsData.data?.attributes?.profile_count || 0;
+
+    // Return counts
+    return {
+      statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify({
+        email: emailCount,
+        sms: smsCount,
+        total: emailCount + smsCount,
+      }),
+    };
+  } catch (error) {
+    console.error("Error fetching profile counts:", error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        error: "Internal server error",
+        message: error.message,
+      }),
+    };
   }
+}
 
   // Only allow POST
   if (event.httpMethod !== "POST") {
@@ -333,19 +410,19 @@ export const handler = async (event) => {
     const applicantProps = {
       email,
       first_name: firstName,
-      last_name:  lastName,
+      last_name: lastName,
       ...(applicantPhone && { phone_number: applicantPhone }),
       properties: {
         charm_squad_applicant: true,
-        tiktok_handle:         tiktok          || "",
-        instagram_handle:      instagram       || "",
-        youtube_handle:        youtube         || "",
-        primary_platform:      primaryPlatform || "",
-        best_post_link:        bestPost        || "",
-        why_join:              whyJoin         || "",
-        heard_from:            heardFrom       || "",
-        posts_per_month:       postsPerMonth   || "",
-        application_date:      new Date().toISOString(),
+        tiktok_handle: tiktok || "",
+        instagram_handle: instagram || "",
+        youtube_handle: youtube || "",
+        primary_platform: primaryPlatform || "",
+        best_post_link: bestPost || "",
+        why_join: whyJoin || "",
+        heard_from: heardFrom || "",
+        posts_per_month: postsPerMonth || "",
+        application_date: new Date().toISOString(),
       },
     };
 
@@ -389,7 +466,7 @@ export const handler = async (event) => {
 async function processBesties(besties, referredByEmail) {
   const results = [];
   for (let i = 0; i < besties.length; i++) {
-    const rawPhone    = besties[i]?.trim();
+    const rawPhone = besties[i]?.trim();
     const bestiePhone = toE164(rawPhone);
 
     if (!bestiePhone) {
@@ -403,8 +480,8 @@ async function processBesties(besties, referredByEmail) {
         phone_number: bestiePhone,
         properties: {
           charm_squad_referral: true,
-          referred_by:          referredByEmail,
-          referral_date:        new Date().toISOString(),
+          referred_by: referredByEmail,
+          referral_date: new Date().toISOString(),
         },
       });
 

@@ -1868,8 +1868,8 @@
         const data = await response.json();
 
         if (response.ok) {
-          console.log("Total profiles:", data.count);
-          return data.count;
+          console.log("Total profiles:", data.total);
+          return data.total;
         } else {
           console.error("Error fetching count:", data);
           return null;
