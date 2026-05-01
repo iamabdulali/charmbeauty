@@ -1,90 +1,3 @@
-// Docs on request and context https://docs.netlify.com/functions/build/#code-your-function-2
-// export const handler =  async (request, context) => {
-//   try {
-//     const response = await fetch(
-//       'https://a.klaviyo.com/api/profiles',
-//       {
-//         headers: {
-//           'Authorization': `Klaviyo-API-Key ${process.env.KLAVIYO_PRIVATE_KEY}`,
-//           'revision': '2024-10-15',
-//           'accept': 'application/vnd.api+json'
-//         }
-//       }
-//     );
-
-//     const data = await response.json();
-
-//     if (response.ok) {
-//       const count = data?.data.length || 0;
-//       return {
-//         statusCode: 200,
-//         headers: {
-//           'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({ count })
-//       };
-//     } else {
-//       return {
-//         statusCode: response.status,
-//         body: JSON.stringify({ error: 'Failed to fetch profiles' })
-//       };
-//     }
-//   } catch (error) {
-//     console.error('Error:', error);
-//     return {
-//       statusCode: 500,
-//       body: JSON.stringify({ error: 'Server error' })
-//     };
-//   }
-// }
-
-
-// export const handler = async (request, context) => {
-//   try {
-//     // Replace with your actual list ID (the one you're using for email subscriptions)
-//     const listId = 'Rt6z2E';
-
-//     const response = await fetch(
-//       `https://a.klaviyo.com/api/lists/${listId}?additional-fields[list]=profile_count`,
-//       {
-//         headers: {
-//           'Authorization': `Klaviyo-API-Key ${process.env.KLAVIYO_PRIVATE_KEY}`,
-//           'revision': '2024-10-15',
-//           'accept': 'application/vnd.api+json'
-//         }
-//       }
-//     );
-
-//     const data = await response.json();
-
-//     if (response.ok) {
-//       // The profile_count will be in the attributes
-//       const count = data?.data?.attributes?.profile_count || 0;
-
-//       return {
-//         statusCode: 200,
-//         headers: {
-//           'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({ count })
-//       };
-//     } else {
-//       return {
-//         statusCode: response.status,
-//         body: JSON.stringify({ error: 'Failed to fetch list count' })
-//       };
-//     }
-//   } catch (error) {
-//     console.error('Error:', error);
-//     return {
-//       statusCode: 500,
-//       body: JSON.stringify({ error: 'Server error' })
-//     };
-//   }
-// }
-
-
-
 const KLAVIYO_API_KEY = process.env.KLAVIYO_PRIVATE_KEY;
 const KLAVIYO_EMAIL_LIST_ID = process.env.KLAVIYO_EMAIL_LIST;
 const KLAVIYO_SMS_LIST_ID = process.env.KLAVIYO_SMS_LIST;
@@ -93,45 +6,6 @@ console.log(KLAVIYO_API_KEY)
 const SEGMENT_ID = process.env.KLAVIYO_SEGMENT_ID;
 const KLAVIYO_API = "https://a.klaviyo.com/api";
 const REVISION = "2024-10-15"; // latest stable revision
-
-
-// exports.handler = async () => {
-//   try {
-//     const response = await fetch(
-//       `${KLAVIYO_API}/segments/${SEGMENT_ID}?additional-fields[segment]=profile_count`,
-//       {
-//         headers: {
-//           Authorization: `Klaviyo-API-Key ${process.env.KLAVIYO_PRIVATE_KEY}`,
-//           revision: "2026-01-15",
-//           accept: "application/vnd.api+json"
-//         }
-//       }
-//     );
-
-//     const data = await response.json();
-
-//     return {
-//       statusCode: 200,
-//       headers: {
-//         "Content-Type": "application/json"
-//       },
-//       body: JSON.stringify({
-//         count: data.data.attributes.profile_count
-//       })
-//     };
-
-//   } catch (error) {
-//     console.error(error);
-
-//     return {
-//       statusCode: 500,
-//       body: JSON.stringify({
-//         error: "Failed to fetch profile count"
-//       })
-//     };
-//   }
-// };
-
 
 
 // E.164 phone formatter
@@ -223,6 +97,43 @@ async function addToList(profileId) {
   if (!res.ok && res.status !== 400) {
     const err = await res.text();
     throw new Error(`Klaviyo addToList failed: ${res.status} ${err}`);
+  }
+}
+
+// Helper: subscribe a profile to the email list with MARKETING consent
+// This sets status to "Subscribed" — unlike addToList which only creates
+// the list relationship without touching consent.
+async function subscribeToEmailList(email) {
+  const res = await fetch(`${KLAVIYO_API}/profile-subscription-bulk-create-jobs/`, {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      revision: REVISION,
+      "content-type": "application/json",
+      Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+    },
+    body: JSON.stringify({
+      data: {
+        type: "profile-subscription-bulk-create-job",
+        attributes: {
+          list_id: KLAVIYO_EMAIL_LIST_ID,
+          subscriptions: [
+            {
+              channels: {
+                email: ["MARKETING"],
+              },
+              email,
+            },
+          ],
+        },
+      },
+    }),
+  });
+
+  // 202 = accepted (async job), anything else is an error
+  if (!res.ok && res.status !== 202) {
+    const err = await res.text();
+    throw new Error(`Klaviyo subscribeToEmailList failed: ${res.status} ${err}`);
   }
 }
 
@@ -428,7 +339,7 @@ if (event.httpMethod === "GET") {
 
     // 2. Upsert applicant + add to master list
     const applicantId = await upsertProfile(applicantProps);
-    await addToList(applicantId);
+    await subscribeToEmailList(applicantId);
 
     // 3. Create bestie referral profiles
     const bestieResults = await processBesties(besties, email);
