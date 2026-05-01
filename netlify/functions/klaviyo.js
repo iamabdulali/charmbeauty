@@ -2,11 +2,10 @@ const KLAVIYO_API_KEY = process.env.KLAVIYO_PRIVATE_KEY;
 const KLAVIYO_EMAIL_LIST_ID = process.env.KLAVIYO_EMAIL_LIST;
 const KLAVIYO_SMS_LIST_ID = process.env.KLAVIYO_SMS_LIST;
 
-console.log(KLAVIYO_API_KEY)
+console.log(KLAVIYO_API_KEY);
 const SEGMENT_ID = process.env.KLAVIYO_SEGMENT_ID;
 const KLAVIYO_API = "https://a.klaviyo.com/api";
 const REVISION = "2024-10-15"; // latest stable revision
-
 
 // E.164 phone formatter
 // Klaviyo rejects anything that isn't E.164 (e.g. +15551234567).
@@ -42,7 +41,8 @@ async function upsertProfile(attributes) {
   if (res.status === 409) {
     const errJson = await res.json();
     const existingId = errJson?.errors?.[0]?.meta?.duplicate_profile_id;
-    if (!existingId) throw new Error("Klaviyo 409 but no duplicate_profile_id returned");
+    if (!existingId)
+      throw new Error("Klaviyo 409 but no duplicate_profile_id returned");
 
     const patchRes = await fetch(`${KLAVIYO_API}/profiles/${existingId}/`, {
       method: "PATCH",
@@ -59,7 +59,9 @@ async function upsertProfile(attributes) {
 
     if (!patchRes.ok) {
       const patchErr = await patchRes.text();
-      throw new Error(`Klaviyo PATCH profile failed: ${patchRes.status} ${patchErr}`);
+      throw new Error(
+        `Klaviyo PATCH profile failed: ${patchRes.status} ${patchErr}`,
+      );
     }
 
     const patchJson = await patchRes.json();
@@ -90,7 +92,7 @@ async function addToList(profileId) {
       body: JSON.stringify({
         data: [{ type: "profile", id: profileId }],
       }),
-    }
+    },
   );
 
   // 204 = success (no body), 400 = already on list
@@ -104,57 +106,61 @@ async function addToList(profileId) {
 // This sets status to "Subscribed" — unlike addToList which only creates
 // the list relationship without touching consent.
 async function subscribeToEmailList(email) {
-  const res = await fetch(`${KLAVIYO_API}/profile-subscription-bulk-create-jobs/`, {
-    method: "POST",
-    headers: {
-      accept: "application/json",
-      revision: REVISION,
-      "content-type": "application/json",
-      Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
-    },
-    body: JSON.stringify({
-      data: {
-        type: "profile-subscription-bulk-create-job",
-        attributes: {
-          profiles: {
-            data: [
-              {
-                type: "profile",
-                attributes: {
-                  email,
-                  subscriptions: {
-                    email: {
-                      marketing: {
-                        consent: "SUBSCRIBED",
+  const res = await fetch(
+    `${KLAVIYO_API}/profile-subscription-bulk-create-jobs/`,
+    {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        revision: REVISION,
+        "content-type": "application/json",
+        Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+      },
+      body: JSON.stringify({
+        data: {
+          type: "profile-subscription-bulk-create-job",
+          attributes: {
+            profiles: {
+              data: [
+                {
+                  type: "profile",
+                  attributes: {
+                    email,
+                    subscriptions: {
+                      email: {
+                        marketing: {
+                          consent: "SUBSCRIBED",
+                        },
                       },
                     },
                   },
                 },
-              },
-            ],
+              ],
+            },
           },
-        },
-        relationships: {
-          list: {
-            data: {
-              type: "list",
-              id: KLAVIYO_EMAIL_LIST_ID,
+          relationships: {
+            list: {
+              data: {
+                type: "list",
+                id: KLAVIYO_EMAIL_LIST_ID,
+              },
             },
           },
         },
-      },
-    }),
-  });
+      }),
+    },
+  );
 
   if (!res.ok && res.status !== 202) {
     const err = await res.text();
-    throw new Error(`Klaviyo subscribeToEmailList failed: ${res.status} ${err}`);
+    throw new Error(
+      `Klaviyo subscribeToEmailList failed: ${res.status} ${err}`,
+    );
   }
 }
 
 // Netlify ESM export
 export const handler = async (event) => {
-
   const headers = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Content-Type",
@@ -167,114 +173,125 @@ export const handler = async (event) => {
   }
 
   // ── GET: return total profile count ────────────────────────────────────────
-if (event.httpMethod === "GET") {
-  try {
-    // Helper function to handle rate limiting with retry
-    const fetchWithRetry = async (url, options, retries = 2) => {
-      for (let i = 0; i <= retries; i++) {
-        const response = await fetch(url, options);
-        
-        if (response.status === 429) {
-          const errorData = await response.json();
-          const retryAfter = errorData.errors?.[0]?.detail?.match(/(\d+) second/)?.[1] || 1;
-          
-          if (i < retries) {
-            console.log(`Rate limited. Retrying after ${retryAfter} seconds...`);
-            await new Promise(resolve => setTimeout(resolve, (parseInt(retryAfter) + 0.5) * 1000));
-            continue;
+  if (event.httpMethod === "GET") {
+    try {
+      // Helper function to handle rate limiting with retry
+      const fetchWithRetry = async (url, options, retries = 2) => {
+        for (let i = 0; i <= retries; i++) {
+          const response = await fetch(url, options);
+
+          if (response.status === 429) {
+            const errorData = await response.json();
+            const retryAfter =
+              errorData.errors?.[0]?.detail?.match(/(\d+) second/)?.[1] || 1;
+
+            if (i < retries) {
+              console.log(
+                `Rate limited. Retrying after ${retryAfter} seconds...`,
+              );
+              await new Promise((resolve) =>
+                setTimeout(resolve, (parseInt(retryAfter) + 0.5) * 1000),
+              );
+              continue;
+            }
           }
+
+          return response;
         }
-        
-        return response;
-      }
-    };
+      };
 
-    // Fetch FIRST list
-    const emailResponse = await fetchWithRetry(
-      `https://a.klaviyo.com/api/lists/${KLAVIYO_EMAIL_LIST_ID}/?additional-fields[list]=profile_count`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
-          revision: "2024-10-15",
-          accept: "application/json",
+      // Fetch FIRST list
+      const emailResponse = await fetchWithRetry(
+        `https://a.klaviyo.com/api/lists/${KLAVIYO_EMAIL_LIST_ID}/?additional-fields[list]=profile_count`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+            revision: "2024-10-15",
+            accept: "application/json",
+          },
         },
-      }
-    );
+      );
 
-    // Wait 1 second between requests to avoid rate limit
-    await new Promise(resolve => setTimeout(resolve, 1000));
+      // Wait 1 second between requests to avoid rate limit
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Fetch SECOND list
-    const smsResponse = await fetchWithRetry(
-      `https://a.klaviyo.com/api/lists/${KLAVIYO_SMS_LIST_ID}/?additional-fields[list]=profile_count`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
-          revision: "2024-10-15",
-          accept: "application/json",
+      // Fetch SECOND list
+      const smsResponse = await fetchWithRetry(
+        `https://a.klaviyo.com/api/lists/${KLAVIYO_SMS_LIST_ID}/?additional-fields[list]=profile_count`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+            revision: "2024-10-15",
+            accept: "application/json",
+          },
         },
-      }
-    );
+      );
 
-    // Check for errors
-    if (!emailResponse.ok || !smsResponse.ok) {
-      const emailError = !emailResponse.ok ? await emailResponse.text() : null;
-      const smsError = !smsResponse.ok ? await smsResponse.text() : null;
-      
-      console.error("Klaviyo API errors:", { emailError, smsError });
-      
+      // Check for errors
+      if (!emailResponse.ok || !smsResponse.ok) {
+        const emailError = !emailResponse.ok
+          ? await emailResponse.text()
+          : null;
+        const smsError = !smsResponse.ok ? await smsResponse.text() : null;
+
+        console.error("Klaviyo API errors:", { emailError, smsError });
+
+        return {
+          statusCode: emailResponse.status || smsResponse.status,
+          body: JSON.stringify({
+            error: "Failed to fetch list data from Klaviyo",
+            details: { emailError, smsError },
+          }),
+        };
+      }
+
+      // Parse responses
+      const [emailData, smsData] = await Promise.all([
+        emailResponse.json(),
+        smsResponse.json(),
+      ]);
+
+      console.log("Email data:", emailData);
+      console.log("SMS data:", smsData);
+
+      // Extract profile counts
+      const emailCount = emailData.data?.attributes?.profile_count || 0;
+      const smsCount = smsData.data?.attributes?.profile_count || 0;
+
+      // Return counts
       return {
-        statusCode: emailResponse.status || smsResponse.status,
+        statusCode: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
         body: JSON.stringify({
-          error: "Failed to fetch list data from Klaviyo",
-          details: { emailError, smsError },
+          email: emailCount,
+          sms: smsCount,
+          total: emailCount + smsCount,
+        }),
+      };
+    } catch (error) {
+      console.error("Error fetching profile counts:", error);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+          error: "Internal server error",
+          message: error.message,
         }),
       };
     }
-
-    // Parse responses
-    const [emailData, smsData] = await Promise.all([
-      emailResponse.json(),
-      smsResponse.json(),
-    ]);
-
-    console.log("Email data:", emailData);
-    console.log("SMS data:", smsData);
-
-    // Extract profile counts
-    const emailCount = emailData.data?.attributes?.profile_count || 0;
-    const smsCount = smsData.data?.attributes?.profile_count || 0;
-
-    // Return counts
-    return {
-      statusCode: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({
-        email: emailCount,
-        sms: smsCount,
-        total: emailCount + smsCount,
-      }),
-    };
-  } catch (error) {
-    console.error("Error fetching profile counts:", error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        error: "Internal server error",
-        message: error.message,
-      }),
-    };
   }
-}
 
   // Only allow POST
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, headers, body: JSON.stringify({ error: "Method Not Allowed" }) };
+    return {
+      statusCode: 405,
+      headers,
+      body: JSON.stringify({ error: "Method Not Allowed" }),
+    };
   }
 
   // Parse body
@@ -282,7 +299,11 @@ if (event.httpMethod === "GET") {
   try {
     body = JSON.parse(event.body);
   } catch {
-    return { statusCode: 400, headers, body: JSON.stringify({ error: "Invalid JSON" }) };
+    return {
+      statusCode: 400,
+      headers,
+      body: JSON.stringify({ error: "Invalid JSON" }),
+    };
   }
 
   const {
@@ -303,7 +324,6 @@ if (event.httpMethod === "GET") {
   } = body;
 
   try {
-
     // BESTIES-ONLY path
     // Called from the success panel after the main form is already submitted.
     // Creates bestie profiles AND patches bestie_phone_1…5 back onto the applicant.
@@ -354,7 +374,7 @@ if (event.httpMethod === "GET") {
 
     // 2. Upsert applicant + add to master list
     const applicantId = await upsertProfile(applicantProps);
-    await subscribeToEmailList(applicantId);
+    await subscribeToEmailList(email);
 
     // 3. Create bestie referral profiles
     const bestieResults = await processBesties(besties, email);
@@ -377,7 +397,6 @@ if (event.httpMethod === "GET") {
         besties: bestieResults,
       }),
     };
-
   } catch (err) {
     console.error("Klaviyo integration error:", err);
     return {
@@ -397,7 +416,11 @@ async function processBesties(besties, referredByEmail) {
 
     if (!bestiePhone) {
       console.warn(`Bestie ${i + 1}: could not parse "${rawPhone}", skipping.`);
-      results.push({ phone: rawPhone, status: "skipped", reason: "invalid phone format" });
+      results.push({
+        phone: rawPhone,
+        status: "skipped",
+        reason: "invalid phone format",
+      });
       continue;
     }
 
