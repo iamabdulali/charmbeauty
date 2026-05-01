@@ -105,57 +105,64 @@ async function addToList(profileId) {
 // Helper: subscribe a profile to the email list with MARKETING consent
 // This sets status to "Subscribed" — unlike addToList which only creates
 // the list relationship without touching consent.
-async function subscribeToEmailList(email) {
-  const res = await fetch(
-    `${KLAVIYO_API}/profile-subscription-bulk-create-jobs/`,
-    {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        revision: REVISION,
-        "content-type": "application/json",
-        Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+async function subscribeProfile(email, phone) {
+  const profileAttributes = {
+    email,
+    subscriptions: {
+      email: {
+        marketing: {
+          consent: "SUBSCRIBED",
+        },
       },
-      body: JSON.stringify({
-        data: {
-          type: "profile-subscription-bulk-create-job",
-          attributes: {
-            profiles: {
-              data: [
-                {
-                  type: "profile",
-                  attributes: {
-                    email,
-                    subscriptions: {
-                      email: {
-                        marketing: {
-                          consent: "SUBSCRIBED",
-                        },
-                      },
-                    },
-                  },
-                },
-              ],
-            },
-          },
-          relationships: {
-            list: {
-              data: {
-                type: "list",
-                id: KLAVIYO_EMAIL_LIST_ID,
+    },
+  };
+
+  // Only add SMS subscription if a valid phone number exists
+  if (phone) {
+    profileAttributes.phone_number = phone;
+    profileAttributes.subscriptions.sms = {
+      marketing: {
+        consent: "SUBSCRIBED",
+      },
+    };
+  }
+
+  const res = await fetch(`${KLAVIYO_API}/profile-subscription-bulk-create-jobs/`, {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      revision: REVISION,
+      "content-type": "application/json",
+      Authorization: `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+    },
+    body: JSON.stringify({
+      data: {
+        type: "profile-subscription-bulk-create-job",
+        attributes: {
+          profiles: {
+            data: [
+              {
+                type: "profile",
+                attributes: profileAttributes,
               },
+            ],
+          },
+        },
+        relationships: {
+          list: {
+            data: {
+              type: "list",
+              id: KLAVIYO_EMAIL_LIST_ID,
             },
           },
         },
-      }),
-    },
-  );
+      },
+    }),
+  });
 
   if (!res.ok && res.status !== 202) {
     const err = await res.text();
-    throw new Error(
-      `Klaviyo subscribeToEmailList failed: ${res.status} ${err}`,
-    );
+    throw new Error(`Klaviyo subscribeProfile failed: ${res.status} ${err}`);
   }
 }
 
@@ -374,8 +381,8 @@ export const handler = async (event) => {
 
     // 2. Upsert applicant + add to master list
     const applicantId = await upsertProfile(applicantProps);
-    await subscribeToEmailList(email);
-
+    await subscribeProfile(email, applicantPhone);
+    
     // 3. Create bestie referral profiles
     const bestieResults = await processBesties(besties, email);
 
