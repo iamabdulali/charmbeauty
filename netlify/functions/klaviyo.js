@@ -124,6 +124,9 @@ async function subscribeProfile(email, phone) {
       marketing: {
         consent: "SUBSCRIBED",
       },
+      transactional: {
+        consent: "SUBSCRIBED",
+      },
     };
   }
 
@@ -382,7 +385,7 @@ export const handler = async (event) => {
     // 2. Upsert applicant + add to master list
     const applicantId = await upsertProfile(applicantProps);
     await subscribeProfile(email, applicantPhone);
-    
+
     // 3. Create bestie referral profiles
     const bestieResults = await processBesties(besties, email);
 
