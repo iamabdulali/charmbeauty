@@ -116,21 +116,36 @@ async function subscribeToEmailList(email) {
       data: {
         type: "profile-subscription-bulk-create-job",
         attributes: {
-          list_id: KLAVIYO_EMAIL_LIST_ID,
-          subscriptions: [
-            {
-              channels: {
-                email: ["MARKETING"],
+          profiles: {
+            data: [
+              {
+                type: "profile",
+                attributes: {
+                  email,
+                  subscriptions: {
+                    email: {
+                      marketing: {
+                        consent: "SUBSCRIBED",
+                      },
+                    },
+                  },
+                },
               },
-              email,
+            ],
+          },
+        },
+        relationships: {
+          list: {
+            data: {
+              type: "list",
+              id: KLAVIYO_EMAIL_LIST_ID,
             },
-          ],
+          },
         },
       },
     }),
   });
 
-  // 202 = accepted (async job), anything else is an error
   if (!res.ok && res.status !== 202) {
     const err = await res.text();
     throw new Error(`Klaviyo subscribeToEmailList failed: ${res.status} ${err}`);
