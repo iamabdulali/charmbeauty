@@ -1381,7 +1381,7 @@
     <div class="spots-wrap reveal d1">
       <div class="spots-title">Giveaway Entries Claimed</div>
       <div class="spots-count" id="spotsCount">
-        0 <span>of 10,000 entered</span>
+        0 <span>of 12,500 entered</span>
       </div>
       <div class="progress-track">
         <div class="progress-fill" id="progressFill"></div>
@@ -1550,8 +1550,8 @@
     const spotsEl = document.getElementById("spotsCount");
     const fillEl = document.getElementById("progressFill");
     function updateSpots() {
-      const pct = ((entries / 10000) * 100).toFixed(1);
-      spotsEl.innerHTML = `${entries} <span>of 10,000 entered</span>`;
+      const pct = ((entries / 12500) * 100).toFixed(1);
+      spotsEl.innerHTML = `${entries} <span>of 12,500 entered</span>`;
       fillEl.style.width = pct + "%";
     }
     setTimeout(() => updateSpots(), 600);
